@@ -21,11 +21,17 @@ library(tnschooldata)
 # Get 2024 enrollment data (2023-24 school year)
 enr_2024 <- fetch_enr(2024)
 
+# Get historical data from 2005 (2004-05 school year)
+enr_2005 <- fetch_enr(2005)
+
 # Get wide format (one row per school)
 enr_wide <- fetch_enr(2024, tidy = FALSE)
 
 # Get multiple years at once
 enr_multi <- fetch_enr_multi(2020:2024)
+
+# Get historical range (district-level only for pre-2012)
+enr_historical <- fetch_enr_multi(1999:2005)
 
 # Filter to specific district (Knox County)
 knox <- enr_2024 %>%
@@ -44,8 +50,9 @@ state_totals <- enr_2024 %>%
 |-----|-------|--------|-------|
 | Modern | 2019-2025 | Excel/Report Card | Standardized format via State Report Card system |
 | Legacy | 2012-2018 | Excel | Older file structures with varying column names |
+| Historical | 1999-2011 | ASR ZIP/Excel | Annual Statistical Report archives (district-level only) |
 
-**Total: 14 years of data (2012-2025)**
+**Total: 27 years of data (1999-2025)**
 
 ### Data Sources
 
@@ -96,6 +103,8 @@ state_totals <- enr_2024 %>%
 4. **Virtual Schools**: Included in district totals
 5. **Pre-2011 Demographics**: Asian and Pacific Islander were combined
 6. **Pre-2011 Multiracial**: Two or more races category not available
+7. **Historical Era (1999-2011)**: Only district-level enrollment by grade is available (no school-level data, no demographics)
+8. **Year 2000 Data**: The 1999-00 school year ASR file may experience download issues on some networks
 
 ## Tennessee ID System
 
@@ -186,16 +195,13 @@ clear_cache(2024)
 enr_fresh <- fetch_enr(2024, use_cache = FALSE)
 ```
 
-## Related Packages
+## Part of the 50 State Schooldata Family
 
-This package is part of the state schooldata family:
+This package is part of a family of R packages providing school enrollment data for all 50 US states. Each package fetches data directly from the state's Department of Education.
 
-- [txschooldata](https://github.com/almartin82/txschooldata) - Texas
-- [caschooldata](https://github.com/almartin82/caschooldata) - California
-- [nyschooldata](https://github.com/almartin82/nyschooldata) - New York
-- [ilschooldata](https://github.com/almartin82/ilschooldata) - Illinois
-- [paschooldata](https://github.com/almartin82/paschooldata) - Pennsylvania
-- [ohschooldata](https://github.com/almartin82/ohschooldata) - Ohio
+**See also:** [njschooldata](https://github.com/almartin82/njschooldata) - The original state schooldata package for New Jersey.
+
+**All packages:** [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
 
 ## License
 

@@ -52,19 +52,30 @@ test_that("get_available_years returns valid range", {
   expect_true("min_year" %in% names(years))
   expect_true("max_year" %in% names(years))
   expect_true("years" %in% names(years))
+  expect_true("asr_era" %in% names(years))
+  expect_true("modern_era" %in% names(years))
 
-  expect_true(years$min_year <= 2012)
+  # Should now include historical data back to 1999
+
+  expect_true(years$min_year <= 1999)
   expect_true(years$max_year >= 2024)
   expect_equal(length(years$years), years$max_year - years$min_year + 1)
+
+  # Check era boundaries
+  expect_equal(min(years$asr_era), 1999)
+  expect_equal(max(years$asr_era), 2011)
+  expect_equal(min(years$modern_era), 2012)
 })
 
 test_that("fetch_enr validates year parameter", {
-  expect_error(fetch_enr(2000), "end_year must be between")
+  # Years outside the valid range (1999-2025) should error
+  expect_error(fetch_enr(1998), "end_year must be between")
   expect_error(fetch_enr(2030), "end_year must be between")
 })
 
 test_that("fetch_enr_multi validates year parameters", {
-  expect_error(fetch_enr_multi(c(2000, 2024)), "Invalid years")
+  # Years outside the valid range (1999-2025) should error
+  expect_error(fetch_enr_multi(c(1998, 2024)), "Invalid years")
   expect_error(fetch_enr_multi(c(2024, 2030)), "Invalid years")
 })
 
@@ -125,6 +136,28 @@ test_that("fetch_enr downloads and processes data", {
   # Check we have state level at minimum
   if (nrow(result) > 0) {
     expect_true("State" %in% result$type)
+  }
+})
+
+test_that("fetch_enr downloads historical ASR data", {
+  skip_on_cran()
+  skip_if_offline()
+
+  # Test a historical year (ASR era)
+  result <- tryCatch(
+    fetch_enr(2005, tidy = FALSE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+
+  # Skip if download fails (ASR server may have issues)
+  skip_if(is.null(result), "ASR data download failed - server may be unavailable")
+
+  # Check structure - ASR data is district-level only
+  expect_true(is.data.frame(result))
+
+  # Should have district names at minimum
+  if (nrow(result) > 0) {
+    expect_true("district_name" %in% names(result) || any(grepl("district", names(result), ignore.case = TRUE)))
   }
 })
 

@@ -98,15 +98,20 @@ make_campus_id <- function(district_id, school_id) {
 #' Get available years for Tennessee enrollment data
 #'
 #' Returns the range of years for which enrollment data is available from TDOE.
+#' Historical data (1999-2011) is sourced from the Annual Statistical Report (ASR)
+#' Excel files. Modern data (2012+) uses the current TDOE data portal.
 #'
-#' @return Named list with min_year and max_year
+#' @return Named list with min_year, max_year, years vector, and era boundaries
 #' @export
 #' @examples
 #' get_available_years()
 get_available_years <- function() {
   list(
-    min_year = 2012,
+    min_year = 1999,
     max_year = 2025,
-    years = 2012:2025
+    years = 1999:2025,
+    # Era boundaries for different data formats
+    asr_era = 1999:2011,  # Annual Statistical Report format
+    modern_era = 2012:2025  # Modern TDOE data portal format
   )
 }
