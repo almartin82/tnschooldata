@@ -1,0 +1,25 @@
+# R package build files
+*.Rproj.user
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# pkgdown docs
+docs/
+
+# Vignette outputs
+/doc/
+/Meta/
+
+# Mac OS files
+.DS_Store
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# R check and build outputs
+*.tar.gz
+*.Rcheck/

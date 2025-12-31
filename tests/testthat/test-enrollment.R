@@ -1,0 +1,276 @@
+# Tests for enrollment functions
+# Note: Most tests are marked as skip_on_cran since they require network access
+
+test_that("safe_numeric handles various inputs", {
+  # Normal numbers
+  expect_equal(safe_numeric("100"), 100)
+  expect_equal(safe_numeric("1,234"), 1234)
+
+  # Suppressed values
+  expect_true(is.na(safe_numeric("*")))
+  expect_true(is.na(safe_numeric("**")))
+  expect_true(is.na(safe_numeric("-1")))
+  expect_true(is.na(safe_numeric("<5")))
+  expect_true(is.na(safe_numeric("< 5")))
+  expect_true(is.na(safe_numeric("")))
+  expect_true(is.na(safe_numeric("N/A")))
+
+  # Whitespace handling
+  expect_equal(safe_numeric("  100  "), 100)
+
+  # Empty input
+  expect_equal(length(safe_numeric(NULL)), 0)
+  expect_equal(length(safe_numeric(character(0))), 0)
+})
+
+test_that("pad_district_id creates 4-digit IDs", {
+  expect_equal(pad_district_id("1"), "0001")
+  expect_equal(pad_district_id("12"), "0012")
+  expect_equal(pad_district_id("123"), "0123")
+  expect_equal(pad_district_id("1234"), "1234")
+  expect_equal(pad_district_id("0470"), "0470")
+  expect_equal(pad_district_id("  470  "), "0470")
+})
+
+test_that("pad_school_id creates 4-digit IDs", {
+  expect_equal(pad_school_id("1"), "0001")
+  expect_equal(pad_school_id("12"), "0012")
+  expect_equal(pad_school_id("123"), "0123")
+  expect_equal(pad_school_id("1234"), "1234")
+})
+
+test_that("make_campus_id creates 8-digit IDs", {
+  expect_equal(make_campus_id("470", "5"), "04700005")
+  expect_equal(make_campus_id("0470", "0005"), "04700005")
+  expect_equal(make_campus_id("1", "1"), "00010001")
+})
+
+test_that("get_available_years returns valid range", {
+  years <- get_available_years()
+
+  expect_true(is.list(years))
+  expect_true("min_year" %in% names(years))
+  expect_true("max_year" %in% names(years))
+  expect_true("years" %in% names(years))
+
+  expect_true(years$min_year <= 2012)
+  expect_true(years$max_year >= 2024)
+  expect_equal(length(years$years), years$max_year - years$min_year + 1)
+})
+
+test_that("fetch_enr validates year parameter", {
+  expect_error(fetch_enr(2000), "end_year must be between")
+  expect_error(fetch_enr(2030), "end_year must be between")
+})
+
+test_that("fetch_enr_multi validates year parameters", {
+  expect_error(fetch_enr_multi(c(2000, 2024)), "Invalid years")
+  expect_error(fetch_enr_multi(c(2024, 2030)), "Invalid years")
+})
+
+test_that("get_cache_dir returns valid path", {
+  cache_dir <- get_cache_dir()
+  expect_true(is.character(cache_dir))
+  expect_true(grepl("tnschooldata", cache_dir))
+})
+
+test_that("cache functions work correctly", {
+  # Test cache path generation
+  path <- get_cache_path(2024, "tidy")
+  expect_true(grepl("enr_tidy_2024.rds", path))
+
+  # Test cache_exists returns FALSE for non-existent cache
+  # (Assuming no cache exists for year 9999)
+  expect_false(cache_exists(9999, "tidy"))
+})
+
+test_that("build_tdoe_url constructs valid URLs", {
+  url <- build_tdoe_url(2024, "membership")
+  expect_true(grepl("tn.gov", url))
+  expect_true(grepl("2024", url))
+  expect_true(grepl("Membership", url))
+})
+
+test_that("create_empty_result returns correct structure", {
+  result <- create_empty_result(2024, "Campus")
+
+  expect_true(is.data.frame(result))
+  expect_equal(nrow(result), 0)
+  expect_true("end_year" %in% names(result))
+  expect_true("type" %in% names(result))
+  expect_true("district_id" %in% names(result))
+  expect_true("campus_id" %in% names(result))
+  expect_true("row_total" %in% names(result))
+})
+
+# Integration tests (require network access)
+test_that("fetch_enr downloads and processes data", {
+  skip_on_cran()
+  skip_if_offline()
+
+  # Use a recent year
+  result <- tryCatch(
+    fetch_enr(2023, tidy = FALSE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+
+  # Skip if download fails (data may not be available)
+  skip_if(is.null(result), "Data download failed - may not be available")
+
+  # Check structure
+  expect_true(is.data.frame(result))
+  expect_true("district_id" %in% names(result))
+  expect_true("type" %in% names(result))
+
+  # Check we have state level at minimum
+  if (nrow(result) > 0) {
+    expect_true("State" %in% result$type)
+  }
+})
+
+test_that("tidy_enr produces correct long format", {
+  skip_on_cran()
+  skip_if_offline()
+
+  # Create sample wide data for testing
+  wide <- data.frame(
+    end_year = 2024,
+    type = "District",
+    district_id = "0470",
+    campus_id = NA_character_,
+    district_name = "Knox County",
+    campus_name = NA_character_,
+    county = "Knox",
+    region = "2",
+    row_total = 1000,
+    white = 500,
+    black = 200,
+    hispanic = 150,
+    asian = 50,
+    native_american = 10,
+    pacific_islander = 5,
+    multiracial = 85,
+    male = 510,
+    female = 490,
+    econ_disadv = 400,
+    lep = 50,
+    special_ed = 100,
+    grade_pk = 50,
+    grade_k = 80,
+    grade_01 = 75,
+    grade_02 = 78,
+    grade_03 = 80,
+    grade_04 = 77,
+    grade_05 = 76,
+    grade_06 = 79,
+    grade_07 = 81,
+    grade_08 = 82,
+    grade_09 = 85,
+    grade_10 = 83,
+    grade_11 = 80,
+    grade_12 = 94,
+    stringsAsFactors = FALSE
+  )
+
+  # Tidy it
+  tidy_result <- tidy_enr(wide)
+
+  # Check structure
+  expect_true("grade_level" %in% names(tidy_result))
+  expect_true("subgroup" %in% names(tidy_result))
+  expect_true("n_students" %in% names(tidy_result))
+  expect_true("pct" %in% names(tidy_result))
+
+  # Check subgroups include expected values
+  subgroups <- unique(tidy_result$subgroup)
+  expect_true("total_enrollment" %in% subgroups)
+  expect_true("hispanic" %in% subgroups)
+  expect_true("white" %in% subgroups)
+
+  # Check grade levels
+  grade_levels <- unique(tidy_result$grade_level)
+  expect_true("TOTAL" %in% grade_levels)
+  expect_true("K" %in% grade_levels)
+  expect_true("09" %in% grade_levels)
+})
+
+test_that("id_enr_aggs adds correct flags", {
+  # Create sample tidy data
+  tidy <- data.frame(
+    end_year = 2024,
+    type = c("State", "District", "Campus"),
+    district_id = c(NA, "0470", "0470"),
+    campus_id = c(NA, NA, "04700005"),
+    grade_level = "TOTAL",
+    subgroup = "total_enrollment",
+    n_students = c(1000000, 50000, 500),
+    pct = 1.0,
+    stringsAsFactors = FALSE
+  )
+
+  result <- id_enr_aggs(tidy)
+
+  # Check flags exist
+  expect_true("is_state" %in% names(result))
+  expect_true("is_district" %in% names(result))
+  expect_true("is_campus" %in% names(result))
+
+  # Check flags are boolean
+  expect_true(is.logical(result$is_state))
+  expect_true(is.logical(result$is_district))
+  expect_true(is.logical(result$is_campus))
+
+  # Check mutual exclusivity (each row is only one type)
+  type_sums <- result$is_state + result$is_district + result$is_campus
+  expect_true(all(type_sums == 1))
+
+  # Check correct assignment
+  expect_true(result$is_state[result$type == "State"])
+  expect_true(result$is_district[result$type == "District"])
+  expect_true(result$is_campus[result$type == "Campus"])
+})
+
+test_that("enr_grade_aggs creates correct aggregations", {
+  # Create sample tidy data with grade levels
+  tidy <- data.frame(
+    end_year = rep(2024, 15),
+    type = rep("District", 15),
+    district_id = rep("0470", 15),
+    campus_id = rep(NA_character_, 15),
+    district_name = rep("Knox County", 15),
+    campus_name = rep(NA_character_, 15),
+    county = rep("Knox", 15),
+    region = rep("2", 15),
+    grade_level = c("TOTAL", "PK", "K", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"),
+    subgroup = rep("total_enrollment", 15),
+    n_students = c(1000, 50, 80, 75, 78, 80, 77, 76, 79, 81, 82, 85, 83, 80, 94),
+    pct = rep(1.0, 15),
+    is_state = rep(FALSE, 15),
+    is_district = rep(TRUE, 15),
+    is_campus = rep(FALSE, 15),
+    stringsAsFactors = FALSE
+  )
+
+  result <- enr_grade_aggs(tidy)
+
+  # Check we got K8, HS, K12 aggregations
+  grade_levels <- unique(result$grade_level)
+  expect_true("K8" %in% grade_levels)
+  expect_true("HS" %in% grade_levels)
+  expect_true("K12" %in% grade_levels)
+
+  # Check K-8 sum (grades K, 01-08)
+  k8_sum <- sum(c(80, 75, 78, 80, 77, 76, 79, 81, 82))  # K through 8
+  k8_result <- result[result$grade_level == "K8", "n_students"]
+  expect_equal(k8_result, k8_sum)
+
+  # Check HS sum (grades 09-12)
+  hs_sum <- sum(c(85, 83, 80, 94))
+  hs_result <- result[result$grade_level == "HS", "n_students"]
+  expect_equal(hs_result, hs_sum)
+
+  # Check K-12 sum
+  k12_sum <- k8_sum + hs_sum
+  k12_result <- result[result$grade_level == "K12", "n_students"]
+  expect_equal(k12_result, k12_sum)
+})
