@@ -23,4 +23,3 @@ docs/
 # R check and build outputs
 *.tar.gz
 *.Rcheck/
-..Rcheck/
