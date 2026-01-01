@@ -195,6 +195,14 @@ clear_cache(2024)
 enr_fresh <- fetch_enr(2024, use_cache = FALSE)
 ```
 
+## Enrollment Visualizations
+
+<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png" alt="Tennessee statewide enrollment trends" width="600">
+
+<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png" alt="Top Tennessee districts" width="600">
+
+See the [full vignette](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks.html) for more insights.
+
 ## Part of the 50 State Schooldata Family
 
 This package is part of a family of R packages providing school enrollment data for all 50 US states. Each package fetches data directly from the state's Department of Education.
