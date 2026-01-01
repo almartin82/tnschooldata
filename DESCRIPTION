@@ -1,12 +1,10 @@
 Package: tnschooldata
-Title: Fetch and Process Tennessee School Data
+Title: Tennessee School Data
 Version: 0.1.0
 Authors@R:
     person("Al", "Martin", , "almartin@example.com", role = c("aut", "cre"))
-Description: Downloads and processes school data from the Tennessee Department
-    of Education (TDOE). Provides functions for fetching enrollment data from
-    the Education Information System (EIS) and Report Card data, transforming
-    it into tidy format for analysis.
+Description: A simple, consistent interface for accessing Tennessee
+    school data in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
