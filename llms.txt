@@ -1,7 +1,7 @@
 # tnschooldata
 
-An R package for fetching and processing school enrollment data from the
-Tennessee Department of Education (TDOE).
+Fetch and analyze Tennessee school enrollment data from the Tennessee
+Department of Education (TDOE) in R or Python.
 
 ## Installation
 
@@ -13,6 +13,8 @@ devtools::install_github("almartin82/tnschooldata")
 ```
 
 ## Quick Start
+
+### R
 
 ``` r
 library(tnschooldata)
@@ -39,6 +41,26 @@ knox <- enr_2024 %>%
 # Get state totals
 state_totals <- enr_2024 %>%
   dplyr::filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL")
+```
+
+### Python
+
+``` python
+import pytnschooldata as tn
+
+# Fetch 2024 data (2023-24 school year)
+enr = tn.fetch_enr(2024)
+
+# Statewide total
+total = enr[enr['is_state'] & (enr['grade_level'] == 'TOTAL')]['n_students'].sum()
+print(f"{total:,} students")
+
+# Get multiple years
+enr_multi = tn.fetch_enr_multi([2020, 2021, 2022, 2023, 2024])
+
+# Check available years
+years = tn.get_available_years()
+print(f"Data available: {years['min_year']}-{years['max_year']}")
 ```
 
 ## Data Availability
