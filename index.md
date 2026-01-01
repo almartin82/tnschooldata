@@ -200,17 +200,24 @@ clear_cache(2024)
 enr_fresh <- fetch_enr(2024, use_cache = FALSE)
 ```
 
-## Part of the 50 State Schooldata Family
+## Enrollment Visualizations
 
-This package is part of a family of R packages providing school
-enrollment data for all 50 US states. Each package fetches data directly
-from the state’s Department of Education.
+![Tennessee statewide enrollment
+trends](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png)
 
-**See also:**
-[njschooldata](https://github.com/almartin82/njschooldata) - The
-original state schooldata package for New Jersey.
+![Top Tennessee
+districts](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png)
 
-**All packages:**
+See the [full
+vignette](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks.html)
+for more insights.
+
+## Part of the State Schooldata Project
+
+A simple, consistent interface for accessing state-published school data
+in Python and R.
+
+**All 50 state packages:**
 [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
 
 ## License
