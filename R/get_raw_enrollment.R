@@ -242,10 +242,6 @@ generate_enrollment_request <- function(end_year, level) {
 
   school_year_label <- paste0(end_year - 1, "-", substr(as.character(end_year), 3, 4))
 
-  # Try alternative data sources
-  # 1. NCES Common Core of Data (CCD) - fallback for basic enrollment
-  # 2. Tennessee Annual Statistical Report data
-
   # For now, return empty frame with expected columns
   # This will be populated when direct download succeeds
   if (level == "school") {
@@ -708,8 +704,8 @@ aggregate_to_district <- function(school_df) {
   }
 
   # Aggregate
-  district_df <- school_df %>%
-    dplyr::group_by(dplyr::across(dplyr::all_of(district_col))) %>%
+  district_df <- school_df |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(district_col))) |>
     dplyr::summarize(
       dplyr::across(dplyr::all_of(district_name_col), dplyr::first),
       dplyr::across(dplyr::any_of(numeric_cols), ~sum(safe_numeric(.), na.rm = TRUE)),
