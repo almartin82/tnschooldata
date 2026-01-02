@@ -8,9 +8,9 @@
 # pkgdown docs
 docs/
 
-# Vignette outputs
-/doc/
-/Meta/
+# Vignette outputs (kept in git for pkgdown builds)
+# /doc/
+# /Meta/
 
 # Mac OS files
 .DS_Store
