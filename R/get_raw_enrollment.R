@@ -70,67 +70,64 @@ get_raw_enr <- function(end_year) {
 #' @keywords internal
 download_enrollment_modern <- function(end_year) {
 
-  # Build URL for membership data
-  # Tennessee uses a consistent URL pattern for membership files
-  # Format: School_Membership_YYYY-YY.xlsx
-  school_year_label <- paste0(end_year - 1, "-", substr(as.character(end_year), 3, 4))
+  # Build URL for membership/profile data
+  # Tennessee DOE URL patterns:
+  # - school-profile-YYYY-YYYY.xlsx (e.g., school-profile-2023-2024.xlsx)
+  # - district-profile-YYYY-YYYY.xlsx
+  start_year <- end_year - 1
+  school_year_label <- paste0(start_year, "-", end_year)
+  school_year_label_short <- paste0(start_year, "-", substr(as.character(end_year), 3, 4))
 
   # Tennessee DOE data downloads page hosts files at tn.gov/content/dam/tn/education/data/
-  # Membership file URLs follow this pattern
   base_url <- "https://www.tn.gov/content/dam/tn/education/data/"
 
   # Try different URL patterns as TDOE has changed formats over time
-  membership_patterns <- c(
+  # Priority order: most recent format first
+  school_patterns <- c(
+    # Current format (2024+): school-profile-YYYY-YYYY.xlsx
+    paste0("school-profile-", school_year_label, ".xlsx"),
+    paste0("school-profile-", start_year, "-", end_year, ".xlsx"),
+    # Older formats
+    paste0("School_Profile_", school_year_label_short, ".xlsx"),
+    paste0("School_Membership_", school_year_label_short, ".xlsx"),
     paste0("Membership_", end_year, ".xlsx"),
     paste0("membership_", end_year, ".xlsx"),
-    paste0("School_Membership_", school_year_label, ".xlsx"),
-    paste0("school_membership_", school_year_label, ".xlsx"),
-    paste0("membership/Membership_", end_year, ".xlsx"),
-    paste0("data-downloads/Membership_", end_year, ".xlsx")
+    paste0("school_membership_", school_year_label_short, ".xlsx")
   )
 
-  profile_patterns <- c(
-    paste0("Profile_", end_year, ".xlsx"),
-    paste0("profile_", end_year, ".xlsx"),
-    paste0("School_Profile_", school_year_label, ".xlsx"),
+  district_patterns <- c(
+    # Current format (2024+): district-profile-YYYY-YYYY.xlsx
+    paste0("district-profile-", school_year_label, ".xlsx"),
+    paste0("district-profile-", start_year, "-", end_year, ".xlsx"),
+    # Older formats
     paste0("District_Profile_", end_year, ".xlsx"),
-    paste0("data-downloads/Profile_", end_year, ".xlsx")
+    paste0("Profile_", end_year, ".xlsx"),
+    paste0("profile_", end_year, ".xlsx")
   )
 
-  # Try to download membership file
-  message("  Downloading membership data...")
-  membership_df <- try_download_patterns(base_url, membership_patterns, end_year, "membership")
+  # Try to download school-level data
+  message("  Downloading school profile data...")
+  school_df <- try_download_patterns(base_url, school_patterns, end_year, "school")
 
-  # Try to download profile file for additional fields
-  message("  Downloading profile data...")
-  profile_df <- try_download_patterns(base_url, profile_patterns, end_year, "profile")
+  # Try to download district-level data
+  message("  Downloading district profile data...")
+  district_df <- try_download_patterns(base_url, district_patterns, end_year, "district")
 
   # If direct downloads fail, use the Report Card API approach
-  if (is.null(membership_df) && is.null(profile_df)) {
+  if (is.null(school_df) && is.null(district_df)) {
     message("  Direct download failed, trying Report Card data export...")
     result <- download_from_report_card(end_year)
     return(result)
   }
 
-  # Merge profile data if both are available
-  if (!is.null(membership_df) && !is.null(profile_df)) {
-    # Identify common ID columns for merge
-    id_cols <- intersect(names(membership_df), names(profile_df))
-    id_cols <- id_cols[grepl("district|school|id", id_cols, ignore.case = TRUE)]
+  # Use downloaded data
+  school_data <- if (!is.null(school_df)) school_df else data.frame()
+  district_data <- if (!is.null(district_df)) district_df else data.frame()
 
-    if (length(id_cols) > 0) {
-      school_data <- dplyr::left_join(membership_df, profile_df, by = id_cols)
-    } else {
-      school_data <- membership_df
-    }
-  } else if (!is.null(membership_df)) {
-    school_data <- membership_df
-  } else {
-    school_data <- profile_df
+  # If we have school data but no district data, aggregate to district
+  if (nrow(school_data) > 0 && nrow(district_data) == 0) {
+    district_data <- aggregate_to_district(school_data)
   }
-
-  # Create district aggregates from school data
-  district_data <- aggregate_to_district(school_data)
 
   list(
     school = school_data,

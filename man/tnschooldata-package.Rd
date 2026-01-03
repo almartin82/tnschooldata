@@ -78,6 +78,7 @@ Tennessee is divided into 8 CORE (Centers of Regional Excellence) regions:
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://almartin82.github.io/tnschooldata}
   \item \url{https://github.com/almartin82/tnschooldata}
   \item Report bugs at \url{https://github.com/almartin82/tnschooldata/issues}
 }

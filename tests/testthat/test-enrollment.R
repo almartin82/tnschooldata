@@ -307,3 +307,234 @@ test_that("enr_grade_aggs creates correct aggregations", {
   k12_result <- result$n_students[result$grade_level == "K12"]
   expect_equal(k12_result, k12_sum)
 })
+
+
+# ==============================================================================
+# DATA FIDELITY TESTS
+# These tests ensure tidy=TRUE output maintains fidelity to raw, unprocessed data
+# ==============================================================================
+
+test_that("modern year (2024) data has no Inf/NaN percentages", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2024, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  # Check for Inf/NaN percentages
+  inf_nan_count <- sum(is.infinite(result$pct) | is.nan(result$pct), na.rm = TRUE)
+  expect_equal(inf_nan_count, 0,
+    info = paste("Found", inf_nan_count, "Inf/NaN percentages in 2024 data"))
+})
+
+test_that("modern year (2024) state-level enrollment is non-zero", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2024, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  # Get state total enrollment
+  state_total <- result[result$is_state &
+                        result$subgroup == "total_enrollment" &
+                        result$grade_level == "TOTAL", ]
+
+  expect_true(nrow(state_total) >= 1, info = "No state total enrollment row found")
+  expect_true(state_total$n_students[1] > 0,
+    info = paste("State enrollment is 0 or negative:", state_total$n_students[1]))
+  # Tennessee has approximately 1 million students
+  expect_true(state_total$n_students[1] > 500000,
+    info = paste("State enrollment implausibly low:", state_total$n_students[1]))
+})
+
+test_that("modern year (2024) has expected subgroups", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2024, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  subgroups <- unique(result$subgroup)
+
+  # Should have total enrollment
+  expect_true("total_enrollment" %in% subgroups)
+
+  # Should have demographic subgroups (from percentage columns)
+  expect_true("white" %in% subgroups, info = "Missing white subgroup")
+  expect_true("black" %in% subgroups, info = "Missing black subgroup")
+  expect_true("hispanic" %in% subgroups, info = "Missing hispanic subgroup")
+  expect_true("asian" %in% subgroups, info = "Missing asian subgroup")
+
+  # Should have special population subgroups
+  expect_true("econ_disadv" %in% subgroups, info = "Missing econ_disadv subgroup")
+  expect_true("lep" %in% subgroups, info = "Missing lep subgroup")
+  expect_true("special_ed" %in% subgroups, info = "Missing special_ed subgroup")
+})
+
+test_that("modern year (2023) data has no Inf/NaN percentages", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2023, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  inf_nan_count <- sum(is.infinite(result$pct) | is.nan(result$pct), na.rm = TRUE)
+  expect_equal(inf_nan_count, 0,
+    info = paste("Found", inf_nan_count, "Inf/NaN percentages in 2023 data"))
+})
+
+test_that("modern year (2023) state-level enrollment is non-zero", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2023, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  state_total <- result[result$is_state &
+                        result$subgroup == "total_enrollment" &
+                        result$grade_level == "TOTAL", ]
+
+  expect_true(nrow(state_total) >= 1)
+  expect_true(state_total$n_students[1] > 500000,
+    info = paste("State enrollment implausibly low:", state_total$n_students[1]))
+})
+
+test_that("ASR era (2005) data has no Inf/NaN percentages", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2005, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "ASR data download failed - server may be unavailable")
+
+  inf_nan_count <- sum(is.infinite(result$pct) | is.nan(result$pct), na.rm = TRUE)
+  expect_equal(inf_nan_count, 0,
+    info = paste("Found", inf_nan_count, "Inf/NaN percentages in 2005 data"))
+})
+
+test_that("ASR era (2005) state-level enrollment is non-zero", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2005, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "ASR data download failed - server may be unavailable")
+
+  state_total <- result[result$is_state &
+                        result$subgroup == "total_enrollment" &
+                        result$grade_level == "TOTAL", ]
+
+  expect_true(nrow(state_total) >= 1)
+  expect_true(state_total$n_students[1] > 500000,
+    info = paste("2005 state enrollment implausibly low:", state_total$n_students[1]))
+})
+
+test_that("ASR era (2005) has grade-level data", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2005, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "ASR data download failed - server may be unavailable")
+
+  grade_levels <- unique(result$grade_level)
+
+  # ASR data should have grade levels
+  expect_true("TOTAL" %in% grade_levels)
+  expect_true("K" %in% grade_levels, info = "Missing kindergarten grade level")
+  expect_true("01" %in% grade_levels, info = "Missing grade 01")
+  expect_true("12" %in% grade_levels, info = "Missing grade 12")
+})
+
+test_that("district counts match state total (modern year)", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2024, tidy = FALSE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  state_row <- result[result$type == "State", ]
+  district_rows <- result[result$type == "District", ]
+
+  skip_if(nrow(state_row) == 0, "No state row found")
+  skip_if(nrow(district_rows) == 0, "No district rows found")
+
+  state_total <- state_row$row_total[1]
+  district_sum <- sum(district_rows$row_total, na.rm = TRUE)
+
+  # They should be close (may differ slightly due to rounding in pct conversion)
+  pct_diff <- abs(state_total - district_sum) / state_total * 100
+  expect_true(pct_diff < 5,
+    info = paste("State total", state_total, "differs from district sum", district_sum,
+                 "by", round(pct_diff, 2), "%"))
+})
+
+test_that("no impossible zeros in demographic counts (modern year)", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2024, tidy = FALSE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  state_row <- result[result$type == "State", ]
+  skip_if(nrow(state_row) == 0, "No state row found")
+
+  # State should have non-zero values for major demographics
+  if ("white" %in% names(state_row)) {
+    expect_true(state_row$white[1] > 0, info = "State white count is 0")
+  }
+  if ("black" %in% names(state_row)) {
+    expect_true(state_row$black[1] > 0, info = "State black count is 0")
+  }
+  if ("hispanic" %in% names(state_row)) {
+    expect_true(state_row$hispanic[1] > 0, info = "State hispanic count is 0")
+  }
+})
+
+test_that("percentages are valid (0-1 range for subgroups)", {
+  skip_on_cran()
+  skip_if_offline()
+
+  result <- tryCatch(
+    fetch_enr(2024, tidy = TRUE, use_cache = FALSE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(result), "Data download failed")
+
+  # Filter to non-total subgroups (total_enrollment should be 1.0)
+  subgroup_data <- result[result$subgroup != "total_enrollment", ]
+  subgroup_data <- subgroup_data[!is.na(subgroup_data$pct), ]
+
+  # Percentages should be between 0 and 1 (inclusive)
+  expect_true(all(subgroup_data$pct >= 0),
+    info = "Found negative percentages")
+  expect_true(all(subgroup_data$pct <= 1),
+    info = "Found percentages > 1 (100%)")
+})

@@ -14,10 +14,8 @@ Depends:
 Imports:
     dplyr,
     readxl,
-    readr,
     purrr,
     stringr,
-    tidyr,
     rlang,
     httr,
     rappdirs
