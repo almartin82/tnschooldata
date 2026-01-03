@@ -69,11 +69,11 @@ print(f"Data available: {years['min_year']}-{years['max_year']}")
 
 | Era        | Years     | Format            | Notes                                                    |
 |------------|-----------|-------------------|----------------------------------------------------------|
-| Modern     | 2019-2025 | Excel/Report Card | Standardized format via State Report Card system         |
+| Modern     | 2019-2024 | Excel/Report Card | Standardized format via State Report Card system         |
 | Legacy     | 2012-2018 | Excel             | Older file structures with varying column names          |
 | Historical | 1999-2011 | ASR ZIP/Excel     | Annual Statistical Report archives (district-level only) |
 
-**Total: 27 years of data (1999-2025)**
+**Total: 26 years of data (1999-2024)**
 
 ### Data Sources
 

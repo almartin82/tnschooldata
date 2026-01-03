@@ -69,7 +69,7 @@ Tennessee data is available in two main eras:
 
 - Legacy Era (2012-2018): Older Excel format files
 
-- Modern Era (2019-2025): Standardized Report Card data system
+- Modern Era (2019-2024): Standardized Report Card data system
 
 ## Tennessee Education Regions
 
