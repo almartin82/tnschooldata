@@ -96,10 +96,10 @@ make_campus_id <- function(district_id, school_id) {
 get_available_years <- function() {
   list(
     min_year = 1999,
-    max_year = 2025,
-    years = 1999:2025,
+    max_year = 2024,
+    years = 1999:2024,
     # Era boundaries for different data formats
     asr_era = 1999:2011,  # Annual Statistical Report format
-    modern_era = 2012:2025  # Modern TDOE data portal format
+    modern_era = 2012:2024  # Modern TDOE data portal format
   )
 }

@@ -41,7 +41,7 @@
 #' Tennessee data is available in two main eras:
 #' \itemize{
 #'   \item Legacy Era (2012-2018): Older Excel format files
-#'   \item Modern Era (2019-2025): Standardized Report Card data system
+#'   \item Modern Era (2019-2024): Standardized Report Card data system
 #' }
 #'
 #' @section Tennessee Education Regions:

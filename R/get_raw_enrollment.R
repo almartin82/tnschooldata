@@ -19,7 +19,7 @@
 #   - Table 7A: Average Daily Membership by grade
 #   - Table 8: Net Enrollment by grade
 # - Legacy Era (2012-2018): Excel files with varying column structures
-# - Modern Era (2019-2025): Standardized Excel downloads from Report Card data system
+# - Modern Era (2019-2024): Standardized Excel downloads from Report Card data system
 #
 # ==============================================================================
 

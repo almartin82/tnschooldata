@@ -68,13 +68,13 @@ test_that("get_available_years returns valid range", {
 })
 
 test_that("fetch_enr validates year parameter", {
-  # Years outside the valid range (1999-2025) should error
+  # Years outside the valid range (1999-2024) should error
   expect_error(fetch_enr(1998), "end_year must be between")
   expect_error(fetch_enr(2030), "end_year must be between")
 })
 
 test_that("fetch_enr_multi validates year parameters", {
-  # Years outside the valid range (1999-2025) should error
+  # Years outside the valid range (1999-2024) should error
   expect_error(fetch_enr_multi(c(1998, 2024)), "Invalid years")
   expect_error(fetch_enr_multi(c(2024, 2030)), "Invalid years")
 })

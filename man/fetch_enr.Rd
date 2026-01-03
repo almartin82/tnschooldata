@@ -8,7 +8,7 @@ fetch_enr(end_year, tidy = TRUE, use_cache = TRUE)
 }
 \arguments{
 \item{end_year}{A school year. Year is the end of the academic year - eg 2023-24
-school year is year '2024'. Valid values are 1999-2025.}
+school year is year '2024'. Valid values are 1999-2024.}
 
 \item{tidy}{If TRUE (default), returns data in long (tidy) format with subgroup
 column. If FALSE, returns wide format.}
@@ -27,10 +27,10 @@ Downloads and processes enrollment data from the Tennessee Department of
 Education data portal.
 }
 \details{
-Data is available from 1999-2025:
+Data is available from 1999-2024:
 \itemize{
 \item 1999-2011: Historical data from Annual Statistical Report (ASR) - district-level only
-\item 2012-2025: Modern data portal - includes school-level data
+\item 2012-2024: Modern data portal - includes school-level data
 }
 }
 \examples{

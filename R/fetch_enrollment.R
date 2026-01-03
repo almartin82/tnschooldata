@@ -12,12 +12,12 @@
 #' Downloads and processes enrollment data from the Tennessee Department of
 #' Education data portal.
 #'
-#' Data is available from 1999-2025:
+#' Data is available from 1999-2024:
 #' - 1999-2011: Historical data from Annual Statistical Report (ASR) - district-level only
-#' - 2012-2025: Modern data portal - includes school-level data
+#' - 2012-2024: Modern data portal - includes school-level data
 #'
 #' @param end_year A school year. Year is the end of the academic year - eg 2023-24
-#'   school year is year '2024'. Valid values are 1999-2025.
+#'   school year is year '2024'. Valid values are 1999-2024.
 #' @param tidy If TRUE (default), returns data in long (tidy) format with subgroup
 #'   column. If FALSE, returns wide format.
 #' @param use_cache If TRUE (default), uses locally cached data when available.
