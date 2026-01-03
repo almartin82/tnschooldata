@@ -294,16 +294,16 @@ test_that("enr_grade_aggs creates correct aggregations", {
 
   # Check K-8 sum (grades K, 01-08)
   k8_sum <- sum(c(80, 75, 78, 80, 77, 76, 79, 81, 82))  # K through 8
-  k8_result <- result[result$grade_level == "K8", "n_students"]
+  k8_result <- result$n_students[result$grade_level == "K8"]
   expect_equal(k8_result, k8_sum)
 
   # Check HS sum (grades 09-12)
   hs_sum <- sum(c(85, 83, 80, 94))
-  hs_result <- result[result$grade_level == "HS", "n_students"]
+  hs_result <- result$n_students[result$grade_level == "HS"]
   expect_equal(hs_result, hs_sum)
 
   # Check K-12 sum
   k12_sum <- k8_sum + hs_sum
-  k12_result <- result[result$grade_level == "K12", "n_students"]
+  k12_result <- result$n_students[result$grade_level == "K12"]
   expect_equal(k12_result, k12_sum)
 })
