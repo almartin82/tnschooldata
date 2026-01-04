@@ -12,6 +12,7 @@ RoxygenNote: 7.3.3
 Depends:
     R (>= 4.0)
 Imports:
+    curl,
     dplyr,
     readxl,
     readr,
