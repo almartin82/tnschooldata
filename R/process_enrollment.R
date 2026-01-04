@@ -25,8 +25,16 @@ process_enr <- function(raw_data, end_year) {
   # Process district data
   district_processed <- process_district_enr(raw_data$district, end_year)
 
-  # Create state aggregate
-  state_processed <- create_state_aggregate(district_processed, end_year)
+  # Check if district data already includes state row (modern format)
+  # Modern format includes state row with type == "State"
+  if (any(district_processed$type == "State")) {
+    # State row already exists in district data - extract it
+    state_processed <- district_processed[district_processed$type == "State", ]
+    district_processed <- district_processed[district_processed$type == "District", ]
+  } else {
+    # Create state aggregate from district data (historical format)
+    state_processed <- create_state_aggregate(district_processed, end_year)
+  }
 
   # Combine all levels
   result <- dplyr::bind_rows(state_processed, district_processed, school_processed)
@@ -111,27 +119,58 @@ process_school_enr <- function(df, end_year) {
     result$region <- trimws(df[[region_col]])
   }
 
+  # Detect if this is percentage-based data (modern format)
+  has_pct_cols <- any(grepl("_pct$", cols, ignore.case = TRUE))
+
   # Total enrollment
-  total_col <- find_col(c("^total$", "^total.*enrollment$", "^enrollment$", "^membership$", "^adm$", "^total.*count$"))
+  total_col <- find_col(c("^row_total$", "^total$", "^total.*enrollment$", "^enrollment$", "^membership$", "^adm$", "^total.*count$"))
   if (!is.null(total_col)) {
     result$row_total <- safe_numeric(df[[total_col]])
   }
 
-  # Demographics
-  demo_map <- list(
-    white = c("^white$", "^white.*count$", "^white.*n$", "^wht$"),
-    black = c("^black$", "^black.*count$", "^african.*american$", "^blk$", "^bla$"),
-    hispanic = c("^hispanic$", "^hispanic.*count$", "^latino$", "^hsp$", "^his$"),
-    asian = c("^asian$", "^asian.*count$", "^asn$", "^asi$"),
-    pacific_islander = c("^pacific.*islander$", "^native.*hawaiian$", "^nhp$", "^pac$"),
-    native_american = c("^american.*indian$", "^native.*american$", "^alaska.*native$", "^ami$", "^ind$"),
-    multiracial = c("^multi.*racial$", "^two.*more$", "^multiple.*race$", "^mul$", "^mlt$")
-  )
+  # Demographics - handle both count and percentage formats
+  if (has_pct_cols) {
+    # Modern format: percentages with row_total to calculate counts
+    demo_map <- list(
+      white = c("^white_pct$", "^white$"),
+      black = c("^african_american_pct$", "^black_pct$", "^black$", "^african.*american$"),
+      hispanic = c("^hispanic_pct$", "^hispanic$", "^latino$"),
+      asian = c("^asian_pct$", "^asian$"),
+      pacific_islander = c("^hawaiian_pacisld_pct$", "^pacific.*islander_pct$", "^pacific.*islander$", "^native.*hawaiian$"),
+      native_american = c("^native_american_pct$", "^american.*indian_pct$", "^native.*american$"),
+      multiracial = c("^multi.*racial_pct$", "^two.*more_pct$", "^multiple.*race_pct$")
+    )
 
-  for (name in names(demo_map)) {
-    col <- find_col(demo_map[[name]])
-    if (!is.null(col)) {
-      result[[name]] <- safe_numeric(df[[col]])
+    row_totals <- result$row_total
+
+    for (name in names(demo_map)) {
+      col <- find_col(demo_map[[name]])
+      if (!is.null(col)) {
+        if (grepl("_pct$", col, ignore.case = TRUE)) {
+          pct_vals <- safe_numeric(df[[col]])
+          result[[name]] <- round(pct_vals / 100 * row_totals)
+        } else {
+          result[[name]] <- safe_numeric(df[[col]])
+        }
+      }
+    }
+  } else {
+    # Historical format: direct counts
+    demo_map <- list(
+      white = c("^white$", "^white.*count$", "^white.*n$", "^wht$"),
+      black = c("^black$", "^black.*count$", "^african.*american$", "^blk$", "^bla$"),
+      hispanic = c("^hispanic$", "^hispanic.*count$", "^latino$", "^hsp$", "^his$"),
+      asian = c("^asian$", "^asian.*count$", "^asn$", "^asi$"),
+      pacific_islander = c("^pacific.*islander$", "^native.*hawaiian$", "^nhp$", "^pac$"),
+      native_american = c("^american.*indian$", "^native.*american$", "^alaska.*native$", "^ami$", "^ind$"),
+      multiracial = c("^multi.*racial$", "^two.*more$", "^multiple.*race$", "^mul$", "^mlt$")
+    )
+
+    for (name in names(demo_map)) {
+      col <- find_col(demo_map[[name]])
+      if (!is.null(col)) {
+        result[[name]] <- safe_numeric(df[[col]])
+      }
     }
   }
 
@@ -146,36 +185,57 @@ process_school_enr <- function(df, end_year) {
     result$female <- safe_numeric(df[[female_col]])
   }
 
-  # Special populations
-  special_map <- list(
-    econ_disadv = c("^economically.*disadvantaged$", "^econ.*disadv$", "^ed$", "^free.*reduced$"),
-    lep = c("^english.*learner$", "^lep$", "^ell$", "^el$", "^limited.*english$"),
-    special_ed = c("^special.*education$", "^sped$", "^disability$", "^iep$", "^swd$")
-  )
+  # Special populations - handle both count and percentage formats
+  if (has_pct_cols) {
+    special_map <- list(
+      econ_disadv = c("^economically_disadvantaged_pct$", "^economically.*disadvantaged$"),
+      lep = c("^limited_english_proficient_pct$", "^lep$", "^ell$", "^el$"),
+      special_ed = c("^students_with_disabilities_pct$", "^special.*education$", "^sped$", "^disability$")
+    )
 
-  for (name in names(special_map)) {
-    col <- find_col(special_map[[name]])
-    if (!is.null(col)) {
-      result[[name]] <- safe_numeric(df[[col]])
+    for (name in names(special_map)) {
+      col <- find_col(special_map[[name]])
+      if (!is.null(col)) {
+        if (grepl("_pct$", col, ignore.case = TRUE)) {
+          pct_vals <- safe_numeric(df[[col]])
+          result[[name]] <- round(pct_vals / 100 * result$row_total)
+        } else {
+          result[[name]] <- safe_numeric(df[[col]])
+        }
+      }
+    }
+  } else {
+    special_map <- list(
+      econ_disadv = c("^economically.*disadvantaged$", "^econ.*disadv$", "^ed$", "^free.*reduced$"),
+      lep = c("^english.*learner$", "^lep$", "^ell$", "^el$", "^limited.*english$"),
+      special_ed = c("^special.*education$", "^sped$", "^disability$", "^iep$", "^swd$")
+    )
+
+    for (name in names(special_map)) {
+      col <- find_col(special_map[[name]])
+      if (!is.null(col)) {
+        result[[name]] <- safe_numeric(df[[col]])
+      }
     }
   }
 
   # Grade levels - Tennessee standard grade naming
+  # Note: Patterns must match both raw column names like "grade_k" and column names like "K"
   grade_map <- list(
-    grade_pk = c("^pk$", "^pre.*k$", "^prek$", "^pre-k$"),
-    grade_k = c("^k$", "^kindergarten$", "^kg$"),
-    grade_01 = c("^1$", "^grade.*1$", "^gr.*1$", "^first$"),
-    grade_02 = c("^2$", "^grade.*2$", "^gr.*2$", "^second$"),
-    grade_03 = c("^3$", "^grade.*3$", "^gr.*3$", "^third$"),
-    grade_04 = c("^4$", "^grade.*4$", "^gr.*4$", "^fourth$"),
-    grade_05 = c("^5$", "^grade.*5$", "^gr.*5$", "^fifth$"),
-    grade_06 = c("^6$", "^grade.*6$", "^gr.*6$", "^sixth$"),
-    grade_07 = c("^7$", "^grade.*7$", "^gr.*7$", "^seventh$"),
-    grade_08 = c("^8$", "^grade.*8$", "^gr.*8$", "^eighth$"),
-    grade_09 = c("^9$", "^grade.*9$", "^gr.*9$", "^ninth$"),
-    grade_10 = c("^10$", "^grade.*10$", "^gr.*10$", "^tenth$"),
-    grade_11 = c("^11$", "^grade.*11$", "^gr.*11$", "^eleventh$"),
-    grade_12 = c("^12$", "^grade.*12$", "^gr.*12$", "^twelfth$")
+    grade_pk = c("^grade_pk$", "^pk$", "^pre.*k$", "^prek$", "^pre-k$"),
+    grade_k = c("^grade_k$", "^k$", "^kindergarten$", "^kg$"),
+    grade_01 = c("^grade_01$", "^1$", "^grade.*1$", "^gr.*1$", "^first$"),
+    grade_02 = c("^grade_02$", "^2$", "^grade.*2$", "^gr.*2$", "^second$"),
+    grade_03 = c("^grade_03$", "^3$", "^grade.*3$", "^gr.*3$", "^third$"),
+    grade_04 = c("^grade_04$", "^4$", "^grade.*4$", "^gr.*4$", "^fourth$"),
+    grade_05 = c("^grade_05$", "^5$", "^grade.*5$", "^gr.*5$", "^fifth$"),
+    grade_06 = c("^grade_06$", "^6$", "^grade.*6$", "^gr.*6$", "^sixth$"),
+    grade_07 = c("^grade_07$", "^7$", "^grade.*7$", "^gr.*7$", "^seventh$"),
+    grade_08 = c("^grade_08$", "^8$", "^grade.*8$", "^gr.*8$", "^eighth$"),
+    grade_09 = c("^grade_09$", "^9$", "^grade.*9$", "^gr.*9$", "^ninth$"),
+    grade_10 = c("^grade_10$", "^10$", "^grade.*10$", "^gr.*10$", "^tenth$"),
+    grade_11 = c("^grade_11$", "^11$", "^grade.*11$", "^gr.*11$", "^eleventh$"),
+    grade_12 = c("^grade_12$", "^12$", "^grade.*12$", "^gr.*12$", "^twelfth$")
   )
 
   for (name in names(grade_map)) {
@@ -213,6 +273,10 @@ process_district_enr <- function(df, end_year) {
     NULL
   }
 
+  # Detect if this is percentage-based data (modern format)
+  # Modern format has columns like "white_pct", "african_american_pct"
+  has_pct_cols <- any(grepl("_pct$", cols, ignore.case = TRUE))
+
   # Build result dataframe with same number of rows as input
   result <- data.frame(
     end_year = rep(end_year, n_rows),
@@ -220,10 +284,14 @@ process_district_enr <- function(df, end_year) {
     stringsAsFactors = FALSE
   )
 
-  # District IDs
-  district_col <- find_col(c("^district.*id$", "^dist.*id$", "^district.*no$", "^system.*id$", "^system$"))
+  # District IDs (also handle "district_no" from modern format)
+  district_col <- find_col(c("^district.*id$", "^dist.*id$", "^district.*no$", "^district_no$", "^system.*id$", "^system$"))
   if (!is.null(district_col)) {
-    result$district_id <- sprintf("%04d", as.integer(trimws(df[[district_col]])))
+    # Handle state row (district_no = 0) - mark as State type
+    district_vals <- trimws(as.character(df[[district_col]]))
+    is_state_row <- district_vals == "0"
+    result$type <- ifelse(is_state_row, "State", "District")
+    result$district_id <- ifelse(is_state_row, NA_character_, sprintf("%04d", as.integer(district_vals)))
   } else {
     result$district_id <- rep(NA_character_, n_rows)
   }
@@ -254,26 +322,57 @@ process_district_enr <- function(df, end_year) {
   }
 
   # Total enrollment
-  total_col <- find_col(c("^total$", "^total.*enrollment$", "^enrollment$", "^membership$", "^adm$"))
+  total_col <- find_col(c("^row_total$", "^total$", "^total.*enrollment$", "^enrollment$", "^membership$", "^adm$", "^total.*count$"))
   if (!is.null(total_col)) {
     result$row_total <- safe_numeric(df[[total_col]])
   }
 
-  # Demographics
-  demo_map <- list(
-    white = c("^white$", "^white.*count$", "^white.*n$", "^wht$"),
-    black = c("^black$", "^black.*count$", "^african.*american$", "^blk$", "^bla$"),
-    hispanic = c("^hispanic$", "^hispanic.*count$", "^latino$", "^hsp$", "^his$"),
-    asian = c("^asian$", "^asian.*count$", "^asn$", "^asi$"),
-    pacific_islander = c("^pacific.*islander$", "^native.*hawaiian$", "^nhp$", "^pac$"),
-    native_american = c("^american.*indian$", "^native.*american$", "^alaska.*native$", "^ami$", "^ind$"),
-    multiracial = c("^multi.*racial$", "^two.*more$", "^multiple.*race$", "^mul$", "^mlt$")
-  )
+  # Demographics - handle both count and percentage formats
+  if (has_pct_cols) {
+    # Modern format: percentages with row_total to calculate counts
+    demo_map <- list(
+      white = c("^white_pct$", "^white$"),
+      black = c("^african_american_pct$", "^black_pct$", "^black$", "^african.*american$"),
+      hispanic = c("^hispanic_pct$", "^hispanic$", "^latino$"),
+      asian = c("^asian_pct$", "^asian$"),
+      pacific_islander = c("^hawaiian_pacisld_pct$", "^pacific.*islander_pct$", "^pacific.*islander$", "^native.*hawaiian$"),
+      native_american = c("^native_american_pct$", "^american.*indian_pct$", "^native.*american$"),
+      multiracial = c("^multi.*racial_pct$", "^two.*more_pct$", "^multiple.*race_pct$")
+    )
 
-  for (name in names(demo_map)) {
-    col <- find_col(demo_map[[name]])
-    if (!is.null(col)) {
-      result[[name]] <- safe_numeric(df[[col]])
+    # Get row_total for percentage calculations
+    row_totals <- result$row_total
+
+    for (name in names(demo_map)) {
+      col <- find_col(demo_map[[name]])
+      if (!is.null(col)) {
+        # Check if this is a percentage column
+        if (grepl("_pct$", col, ignore.case = TRUE)) {
+          # Convert percentage to count: pct/100 * total
+          pct_vals <- safe_numeric(df[[col]])
+          result[[name]] <- round(pct_vals / 100 * row_totals)
+        } else {
+          result[[name]] <- safe_numeric(df[[col]])
+        }
+      }
+    }
+  } else {
+    # Historical format: direct counts
+    demo_map <- list(
+      white = c("^white$", "^white.*count$", "^white.*n$", "^wht$"),
+      black = c("^black$", "^black.*count$", "^african.*american$", "^blk$", "^bla$"),
+      hispanic = c("^hispanic$", "^hispanic.*count$", "^latino$", "^hsp$", "^his$"),
+      asian = c("^asian$", "^asian.*count$", "^asn$", "^asi$"),
+      pacific_islander = c("^pacific.*islander$", "^native.*hawaiian$", "^nhp$", "^pac$"),
+      native_american = c("^american.*indian$", "^native.*american$", "^alaska.*native$", "^ami$", "^ind$"),
+      multiracial = c("^multi.*racial$", "^two.*more$", "^multiple.*race$", "^mul$", "^mlt$")
+    )
+
+    for (name in names(demo_map)) {
+      col <- find_col(demo_map[[name]])
+      if (!is.null(col)) {
+        result[[name]] <- safe_numeric(df[[col]])
+      }
     }
   }
 
@@ -288,36 +387,57 @@ process_district_enr <- function(df, end_year) {
     result$female <- safe_numeric(df[[female_col]])
   }
 
-  # Special populations
-  special_map <- list(
-    econ_disadv = c("^economically.*disadvantaged$", "^econ.*disadv$", "^ed$", "^free.*reduced$"),
-    lep = c("^english.*learner$", "^lep$", "^ell$", "^el$", "^limited.*english$"),
-    special_ed = c("^special.*education$", "^sped$", "^disability$", "^iep$", "^swd$")
-  )
+  # Special populations - handle both count and percentage formats
+  if (has_pct_cols) {
+    special_map <- list(
+      econ_disadv = c("^economically_disadvantaged_pct$", "^economically.*disadvantaged$"),
+      lep = c("^limited_english_proficient_pct$", "^lep$", "^ell$", "^el$"),
+      special_ed = c("^students_with_disabilities_pct$", "^special.*education$", "^sped$", "^disability$")
+    )
 
-  for (name in names(special_map)) {
-    col <- find_col(special_map[[name]])
-    if (!is.null(col)) {
-      result[[name]] <- safe_numeric(df[[col]])
+    for (name in names(special_map)) {
+      col <- find_col(special_map[[name]])
+      if (!is.null(col)) {
+        if (grepl("_pct$", col, ignore.case = TRUE)) {
+          pct_vals <- safe_numeric(df[[col]])
+          result[[name]] <- round(pct_vals / 100 * result$row_total)
+        } else {
+          result[[name]] <- safe_numeric(df[[col]])
+        }
+      }
+    }
+  } else {
+    special_map <- list(
+      econ_disadv = c("^economically.*disadvantaged$", "^econ.*disadv$", "^ed$", "^free.*reduced$"),
+      lep = c("^english.*learner$", "^lep$", "^ell$", "^el$", "^limited.*english$"),
+      special_ed = c("^special.*education$", "^sped$", "^disability$", "^iep$", "^swd$")
+    )
+
+    for (name in names(special_map)) {
+      col <- find_col(special_map[[name]])
+      if (!is.null(col)) {
+        result[[name]] <- safe_numeric(df[[col]])
+      }
     }
   }
 
   # Grade levels
+  # Note: Patterns must match both raw column names like "grade_k" and column names like "K"
   grade_map <- list(
-    grade_pk = c("^pk$", "^pre.*k$", "^prek$", "^pre-k$"),
-    grade_k = c("^k$", "^kindergarten$", "^kg$"),
-    grade_01 = c("^1$", "^grade.*1$", "^gr.*1$"),
-    grade_02 = c("^2$", "^grade.*2$", "^gr.*2$"),
-    grade_03 = c("^3$", "^grade.*3$", "^gr.*3$"),
-    grade_04 = c("^4$", "^grade.*4$", "^gr.*4$"),
-    grade_05 = c("^5$", "^grade.*5$", "^gr.*5$"),
-    grade_06 = c("^6$", "^grade.*6$", "^gr.*6$"),
-    grade_07 = c("^7$", "^grade.*7$", "^gr.*7$"),
-    grade_08 = c("^8$", "^grade.*8$", "^gr.*8$"),
-    grade_09 = c("^9$", "^grade.*9$", "^gr.*9$"),
-    grade_10 = c("^10$", "^grade.*10$", "^gr.*10$"),
-    grade_11 = c("^11$", "^grade.*11$", "^gr.*11$"),
-    grade_12 = c("^12$", "^grade.*12$", "^gr.*12$")
+    grade_pk = c("^grade_pk$", "^pk$", "^pre.*k$", "^prek$", "^pre-k$"),
+    grade_k = c("^grade_k$", "^k$", "^kindergarten$", "^kg$"),
+    grade_01 = c("^grade_01$", "^1$", "^grade.*1$", "^gr.*1$"),
+    grade_02 = c("^grade_02$", "^2$", "^grade.*2$", "^gr.*2$"),
+    grade_03 = c("^grade_03$", "^3$", "^grade.*3$", "^gr.*3$"),
+    grade_04 = c("^grade_04$", "^4$", "^grade.*4$", "^gr.*4$"),
+    grade_05 = c("^grade_05$", "^5$", "^grade.*5$", "^gr.*5$"),
+    grade_06 = c("^grade_06$", "^6$", "^grade.*6$", "^gr.*6$"),
+    grade_07 = c("^grade_07$", "^7$", "^grade.*7$", "^gr.*7$"),
+    grade_08 = c("^grade_08$", "^8$", "^grade.*8$", "^gr.*8$"),
+    grade_09 = c("^grade_09$", "^9$", "^grade.*9$", "^gr.*9$"),
+    grade_10 = c("^grade_10$", "^10$", "^grade.*10$", "^gr.*10$"),
+    grade_11 = c("^grade_11$", "^11$", "^grade.*11$", "^gr.*11$"),
+    grade_12 = c("^grade_12$", "^12$", "^grade.*12$", "^gr.*12$")
   )
 
   for (name in names(grade_map)) {

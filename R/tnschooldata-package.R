@@ -62,3 +62,8 @@
 #' @aliases tnschooldata
 #' @keywords internal
 "_PACKAGE"
+
+# Global variables to avoid R CMD check notes
+utils::globalVariables(c(
+  "grade_level", "n_students", "row_total", "subgroup", "type"
+))
