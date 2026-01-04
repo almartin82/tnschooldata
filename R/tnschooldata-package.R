@@ -62,4 +62,3 @@
 #' @aliases tnschooldata
 #' @keywords internal
 "_PACKAGE"
-

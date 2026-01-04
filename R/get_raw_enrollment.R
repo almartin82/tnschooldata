@@ -526,7 +526,7 @@ read_asr_enrollment_table <- function(extract_dir, end_year) {
     readxl::read_excel(enrollment_file, col_types = "text")
   }, error = function(e) {
     message(paste("  Error reading Excel file:", e$message))
-    return(NULL)
+    NULL
   })
 
   if (is.null(df) || nrow(df) == 0) {
@@ -560,7 +560,7 @@ process_asr_enrollment_table <- function(df, end_year) {
 
   # Find the header row (contains grade labels like K, 1ST, 2ND, etc.)
   header_row_idx <- NULL
-  for (i in 1:min(10, nrow(df))) {
+  for (i in seq_len(min(10, nrow(df)))) {
     row_vals <- toupper(as.character(unlist(df[i, ])))
     # Look for grade indicators
     if (any(grepl("^K$|^1ST$|^2ND$|^9TH$|^TOTAL$", row_vals, ignore.case = TRUE))) {
