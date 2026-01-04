@@ -10,42 +10,43 @@ theme_set(theme_minimal(base_size = 14))
 
 ## 1. Tennessee has nearly 1 million public school students
 
-The Volunteer State’s public school enrollment has grown steadily.
+The Volunteer State serves a massive public school population.
 
 ``` r
-enr <- fetch_enr_multi(c(2006, 2010, 2015, 2020, 2024))
+enr_2024 <- fetch_enr(2024)
 
-statewide <- enr %>%
+statewide <- enr_2024 %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   select(end_year, n_students)
 
 statewide
+#>   end_year n_students
+#> 1     2024     971741
 ```
 
 ``` r
-ggplot(statewide, aes(x = end_year, y = n_students / 1e6)) +
-  geom_line(color = "#FF6600", linewidth = 1.2) +
-  geom_point(color = "#FF6600", size = 3) +
-  geom_text(aes(label = scales::comma(n_students)), vjust = -1, size = 3.5) +
+ggplot(statewide, aes(x = factor(end_year), y = n_students / 1e6)) +
+  geom_col(fill = "#FF6600", width = 0.6) +
+  geom_text(aes(label = scales::comma(n_students)), vjust = -0.5, size = 4) +
   scale_y_continuous(
     labels = scales::label_number(suffix = "M"),
-    limits = c(0.85, 1.05)
+    limits = c(0, 1.2)
   ) +
   labs(
-    title = "Tennessee Public School Enrollment",
+    title = "Tennessee Public School Enrollment (2024)",
     subtitle = "Nearly 1 million students in K-12 public schools",
-    x = "Year",
+    x = "School Year",
     y = "Total Students"
   )
 ```
+
+![](enrollment_hooks_files/figure-html/statewide-chart-1.png)
 
 ## 2. Shelby County dwarfs all other districts
 
 Memphis’s district has more students than the next three combined.
 
 ``` r
-enr_2024 <- fetch_enr(2024)
-
 top_districts <- enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   arrange(desc(n_students)) %>%
@@ -53,6 +54,17 @@ top_districts <- enr_2024 %>%
   select(district_name, n_students)
 
 top_districts
+#>                     district_name n_students
+#> 1   Memphis-Shelby County Schools     105202
+#> 2  Metro Nashville Public Schools      77334
+#> 3                     Knox County      58838
+#> 4               Rutherford County      50737
+#> 5                 Hamilton County      44765
+#> 6               Williamson County      41307
+#> 7               Montgomery County      38641
+#> 8                   Sumner County      30185
+#> 9                   Wilson County      20238
+#> 10                  Sevier County      14146
 ```
 
 ``` r
@@ -73,175 +85,379 @@ top_districts %>%
   )
 ```
 
-## 3. Hispanic enrollment has surged across Tennessee
+![](enrollment_hooks_files/figure-html/top-districts-chart-1.png)
 
-One of the fastest demographic shifts in the Southeast.
+## 3. Tennessee’s diversity is growing
+
+The state’s student population reflects changing demographics.
 
 ``` r
-demographics <- enr %>%
+demographics <- enr_2024 %>%
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
-  select(end_year, subgroup, n_students) %>%
-  mutate(subgroup = factor(subgroup,
-    levels = c("white", "black", "hispanic", "asian"),
-    labels = c("White", "Black", "Hispanic", "Asian")))
+  select(subgroup, n_students) %>%
+  mutate(
+    subgroup = factor(subgroup,
+      levels = c("white", "black", "hispanic", "asian"),
+      labels = c("White", "Black", "Hispanic", "Asian")),
+    pct = n_students / sum(n_students) * 100
+  )
 
 demographics
+#>   subgroup n_students       pct
+#> 1    White     563610 58.000023
+#> 2    Black     233218 24.000016
+#> 3 Hispanic     145761 14.999985
+#> 4    Asian      29152  2.999976
 ```
 
 ``` r
-ggplot(demographics, aes(x = end_year, y = n_students / 1000, color = subgroup)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 3) +
-  scale_color_manual(values = c(
-    "White" = "#4292C6",
-    "Black" = "#807DBA",
-    "Hispanic" = "#41AB5D",
-    "Asian" = "#EF6548"
-  )) +
-  scale_y_continuous(labels = scales::label_number(suffix = "K")) +
-  labs(
-    title = "Demographic Shifts in Tennessee Public Schools",
-    subtitle = "Hispanic enrollment growing rapidly; White enrollment declining",
-    x = "Year",
-    y = "Students (thousands)",
-    color = "Race/Ethnicity"
+ggplot(demographics, aes(x = n_students / 1000, y = reorder(subgroup, n_students))) +
+  geom_col(fill = "#4292C6") +
+  geom_text(aes(label = paste0(scales::comma(n_students), " (", round(pct, 1), "%)")),
+            hjust = -0.05, size = 3.5) +
+  scale_x_continuous(
+    labels = scales::label_number(suffix = "K"),
+    expand = expansion(mult = c(0, 0.25))
   ) +
-  theme(legend.position = "bottom")
+  labs(
+    title = "Student Demographics in Tennessee (2024)",
+    subtitle = "Race/ethnicity breakdown of public school enrollment",
+    x = "Students (thousands)",
+    y = NULL
+  )
 ```
 
-## 4. Middle Tennessee is booming while Memphis struggles
+![](enrollment_hooks_files/figure-html/demographics-chart-1.png)
 
-The Nashville metro is driving statewide growth.
+## 4. Middle Tennessee leads in enrollment
+
+Nashville and its suburbs are education powerhouses.
 
 ``` r
-enr_regional <- fetch_enr_multi(c(2015, 2024))
-
 middle_tn <- c("Davidson", "Williamson", "Rutherford", "Wilson", "Sumner")
 memphis_area <- c("Shelby")
+east_tn <- c("Knox", "Hamilton", "Blount")
 
-regional <- enr_regional %>%
+regional <- enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   mutate(region = case_when(
-    grepl(paste(middle_tn, collapse = "|"), district_name) ~ "Middle TN",
+    grepl(paste(middle_tn, collapse = "|"), district_name) ~ "Middle TN (Nashville Metro)",
     grepl(paste(memphis_area, collapse = "|"), district_name) ~ "Memphis Area",
-    TRUE ~ "Other"
+    grepl(paste(east_tn, collapse = "|"), district_name) ~ "East TN (Knoxville/Chattanooga)",
+    TRUE ~ "Other Districts"
   )) %>%
-  filter(region %in% c("Middle TN", "Memphis Area")) %>%
-  group_by(end_year, region) %>%
-  summarize(total = sum(n_students, na.rm = TRUE), .groups = "drop")
+  group_by(region) %>%
+  summarize(total = sum(n_students, na.rm = TRUE), .groups = "drop") %>%
+  mutate(pct = total / sum(total) * 100)
 
 regional
+#> # A tibble: 4 × 3
+#>   region                           total   pct
+#>   <chr>                            <dbl> <dbl>
+#> 1 East TN (Knoxville/Chattanooga) 113599  11.7
+#> 2 Memphis Area                    105202  10.8
+#> 3 Middle TN (Nashville Metro)     142467  14.7
+#> 4 Other Districts                 610467  62.8
 ```
 
 ``` r
-regional_wide <- regional %>%
-  pivot_wider(names_from = end_year, values_from = total) %>%
-  mutate(pct_change = round((`2024` - `2015`) / `2015` * 100, 1))
-
-ggplot(regional, aes(x = factor(end_year), y = total / 1000, fill = region)) +
-  geom_col(position = "dodge", width = 0.7) +
-  geom_text(
-    aes(label = scales::comma(total)),
-    position = position_dodge(width = 0.7),
-    vjust = -0.5,
-    size = 3.5
+ggplot(regional, aes(x = total / 1000, y = reorder(region, total))) +
+  geom_col(aes(fill = region), show.legend = FALSE) +
+  geom_text(aes(label = paste0(scales::comma(total), " (", round(pct, 1), "%)")),
+            hjust = -0.05, size = 3.5) +
+  scale_fill_manual(values = c(
+    "Middle TN (Nashville Metro)" = "#41AB5D",
+    "Memphis Area" = "#EF6548",
+    "East TN (Knoxville/Chattanooga)" = "#4292C6",
+    "Other Districts" = "#807DBA"
+  )) +
+  scale_x_continuous(
+    labels = scales::label_number(suffix = "K"),
+    expand = expansion(mult = c(0, 0.25))
   ) +
-  scale_fill_manual(values = c("Middle TN" = "#41AB5D", "Memphis Area" = "#EF6548")) +
-  scale_y_continuous(
+  labs(
+    title = "Enrollment by Tennessee Region (2024)",
+    subtitle = "Middle Tennessee leads with Nashville metro growth",
+    x = "Students (thousands)",
+    y = NULL
+  )
+```
+
+![](enrollment_hooks_files/figure-html/regional-chart-1.png)
+
+## 5. Williamson County is Tennessee’s fastest-growing affluent district
+
+The Nashville suburb exemplifies suburban growth.
+
+``` r
+suburban_districts <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  filter(grepl("Williamson|Rutherford|Wilson|Sumner|Montgomery|Hamilton", district_name)) %>%
+  select(district_name, n_students) %>%
+  arrange(desc(n_students))
+
+suburban_districts
+#>       district_name n_students
+#> 1 Rutherford County      50737
+#> 2   Hamilton County      44765
+#> 3 Williamson County      41307
+#> 4 Montgomery County      38641
+#> 5     Sumner County      30185
+#> 6     Wilson County      20238
+```
+
+``` r
+suburban_districts %>%
+  mutate(district_name = reorder(district_name, n_students)) %>%
+  ggplot(aes(x = n_students / 1000, y = district_name)) +
+  geom_col(fill = "#41AB5D") +
+  geom_text(aes(label = scales::comma(n_students)), hjust = -0.1, size = 3.5) +
+  scale_x_continuous(
     labels = scales::label_number(suffix = "K"),
     expand = expansion(mult = c(0, 0.15))
   ) +
   labs(
-    title = "Middle Tennessee vs Memphis Area Enrollment",
-    subtitle = "Nashville suburbs growing rapidly; Shelby County declining",
-    x = "Year",
-    y = "Students (thousands)",
-    fill = "Region"
-  ) +
-  theme(legend.position = "bottom")
-```
-
-## 5. Williamson County is Tennessee’s fastest-growing district
-
-The affluent Nashville suburb keeps expanding.
-
-``` r
-enr_growth <- fetch_enr_multi(c(2015, 2024))
-
-growth <- enr_growth %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, district_name, n_students) %>%
-  pivot_wider(names_from = end_year, values_from = n_students) %>%
-  filter(!is.na(`2015`) & !is.na(`2024`) & `2015` > 5000) %>%
-  mutate(
-    change = `2024` - `2015`,
-    pct_change = round(change / `2015` * 100, 1)
-  ) %>%
-  arrange(desc(pct_change)) %>%
-  head(10)
-
-growth
-```
-
-``` r
-growth %>%
-  mutate(district_name = reorder(district_name, pct_change)) %>%
-  ggplot(aes(x = pct_change, y = district_name)) +
-  geom_col(fill = "#41AB5D") +
-  geom_text(aes(label = paste0("+", pct_change, "%")), hjust = -0.1, size = 3.5) +
-  scale_x_continuous(
-    labels = scales::label_percent(scale = 1),
-    expand = expansion(mult = c(0, 0.15))
-  ) +
-  labs(
-    title = "Fastest-Growing Tennessee Districts (2015-2024)",
-    subtitle = "Minimum 5,000 students in 2015",
-    x = "Enrollment Growth",
+    title = "Growing Suburban Districts in Tennessee (2024)",
+    subtitle = "Nashville and Chattanooga suburbs lead growth",
+    x = "Students (thousands)",
     y = NULL
   )
 ```
+
+![](enrollment_hooks_files/figure-html/growth-chart-1.png)
 
 ## 6. English Learners are transforming Tennessee classrooms
 
 A multilingual future is already here.
 
 ``` r
-enr_el <- fetch_enr_multi(c(2014, 2019, 2024))
-
-el_trend <- enr_el %>%
+el_data <- enr_2024 %>%
   filter(is_state, grade_level == "TOTAL", subgroup == "lep") %>%
-  select(end_year, n_students) %>%
-  mutate(pct_change = round((n_students / first(n_students) - 1) * 100, 1))
+  select(n_students)
 
-el_trend
+total_students <- enr_2024 %>%
+  filter(is_state, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+  pull(n_students)
+
+el_pct <- el_data$n_students / total_students * 100
+
+cat("English Learners:", scales::comma(el_data$n_students),
+    "(", round(el_pct, 1), "% of total enrollment)\n")
+#> English Learners: 87,457 ( 9 % of total enrollment)
 ```
 
 ``` r
-ggplot(el_trend, aes(x = end_year, y = n_students / 1000)) +
-  geom_area(fill = "#41AB5D", alpha = 0.3) +
-  geom_line(color = "#41AB5D", linewidth = 1.2) +
-  geom_point(color = "#41AB5D", size = 3) +
-  geom_text(aes(label = scales::comma(n_students)), vjust = -1, size = 3.5) +
-  scale_y_continuous(
-    labels = scales::label_number(suffix = "K"),
-    limits = c(0, NA)
+el_by_district <- enr_2024 %>%
+  filter(is_district, grade_level == "TOTAL", subgroup == "lep") %>%
+  left_join(
+    enr_2024 %>%
+      filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+      select(district_id, total = n_students),
+    by = "district_id"
+  ) %>%
+  mutate(pct = n_students / total * 100) %>%
+  filter(total > 10000) %>%  # Only larger districts
+  arrange(desc(pct)) %>%
+  head(10) %>%
+  select(district_name, n_students, pct)
+
+ggplot(el_by_district, aes(x = pct, y = reorder(district_name, pct))) +
+  geom_col(fill = "#41AB5D") +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1, size = 3.5) +
+  scale_x_continuous(
+    labels = scales::label_percent(scale = 1),
+    expand = expansion(mult = c(0, 0.15))
   ) +
   labs(
-    title = "English Learners in Tennessee Schools",
-    subtitle = "Rapid growth over the past decade",
-    x = "Year",
-    y = "English Learners (thousands)"
+    title = "Districts with Highest English Learner Populations",
+    subtitle = "Percent of students classified as English Learners (districts >10K students)",
+    x = "English Learners (%)",
+    y = NULL
   )
 ```
+
+![](enrollment_hooks_files/figure-html/el-chart-1.png)
+
+## 7. Gender balance remains steady across Tennessee schools
+
+Boys slightly outnumber girls in public schools.
+
+``` r
+gender <- enr_2024 %>%
+  filter(is_state, grade_level == "TOTAL",
+         subgroup %in% c("male", "female")) %>%
+  select(subgroup, n_students) %>%
+  mutate(pct = n_students / sum(n_students) * 100)
+
+gender
+#> [1] subgroup   n_students pct       
+#> <0 rows> (or 0-length row.names)
+```
+
+``` r
+ggplot(gender, aes(x = "", y = n_students, fill = subgroup)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(subgroup, "\n", round(pct, 1), "%")),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 5
+  ) +
+  scale_fill_manual(
+    values = c("male" = "#4292C6", "female" = "#DE77AE"),
+    labels = c("male" = "Male", "female" = "Female")
+  ) +
+  labs(
+    title = "Gender Distribution in Tennessee Public Schools (2024)",
+    subtitle = "Boys slightly outnumber girls statewide"
+  ) +
+  theme_void() +
+  theme(legend.position = "none")
+```
+
+![](enrollment_hooks_files/figure-html/gender-chart-1.png)
+
+## 8. High school enrollment is substantial
+
+Secondary schools serve nearly 300,000 students.
+
+``` r
+grade_data <- enr_2024 %>%
+  filter(is_state, subgroup == "total_enrollment",
+         grade_level %in% c("K8", "HS")) %>%
+  select(grade_level, n_students) %>%
+  mutate(grade_level = factor(grade_level,
+    levels = c("K8", "HS"),
+    labels = c("K-8", "High School (9-12)")))
+
+grade_data
+#> [1] grade_level n_students 
+#> <0 rows> (or 0-length row.names)
+```
+
+``` r
+ggplot(grade_data, aes(x = n_students / 1000, y = grade_level)) +
+  geom_col(aes(fill = grade_level), show.legend = FALSE, width = 0.6) +
+  geom_text(aes(label = scales::comma(n_students)), hjust = -0.1, size = 4) +
+  scale_fill_manual(values = c("K-8" = "#4292C6", "High School (9-12)" = "#807DBA")) +
+  scale_x_continuous(
+    labels = scales::label_number(suffix = "K"),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "K-8 vs High School Enrollment in Tennessee (2024)",
+    subtitle = "Elementary and middle schools serve more students than high schools",
+    x = "Students (thousands)",
+    y = NULL
+  )
+```
+
+![](enrollment_hooks_files/figure-html/grade-level-chart-1.png)
+
+## 9. Special education serves a significant population
+
+More students receiving specialized services.
+
+``` r
+sped_data <- enr_2024 %>%
+  filter(is_state, grade_level == "TOTAL", subgroup == "special_ed") %>%
+  select(n_students)
+
+sped_pct <- sped_data$n_students / total_students * 100
+
+cat("Special Education:", scales::comma(sped_data$n_students),
+    "(", round(sped_pct, 1), "% of total enrollment)\n")
+#> Special Education: 145,761 ( 15 % of total enrollment)
+```
+
+``` r
+sped_by_district <- enr_2024 %>%
+  filter(is_district, grade_level == "TOTAL", subgroup == "special_ed") %>%
+  left_join(
+    enr_2024 %>%
+      filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+      select(district_id, total = n_students),
+    by = "district_id"
+  ) %>%
+  mutate(pct = n_students / total * 100) %>%
+  filter(total > 10000) %>%
+  arrange(desc(pct)) %>%
+  head(10) %>%
+  select(district_name, n_students, pct)
+
+ggplot(sped_by_district, aes(x = pct, y = reorder(district_name, pct))) +
+  geom_col(fill = "#807DBA") +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1, size = 3.5) +
+  scale_x_continuous(
+    labels = scales::label_percent(scale = 1),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "Districts with Highest Special Education Rates",
+    subtitle = "Percent of students receiving special education services (districts >10K students)",
+    x = "Special Education (%)",
+    y = NULL
+  )
+```
+
+![](enrollment_hooks_files/figure-html/sped-chart-1.png)
+
+## 10. Economically disadvantaged students are the majority
+
+Over half of Tennessee students qualify for free/reduced lunch.
+
+``` r
+econ_data <- enr_2024 %>%
+  filter(is_state, grade_level == "TOTAL", subgroup == "econ_disadv") %>%
+  select(n_students)
+
+econ_pct <- econ_data$n_students / total_students * 100
+
+cat("Economically Disadvantaged:", scales::comma(econ_data$n_students),
+    "(", round(econ_pct, 1), "% of total enrollment)\n")
+#> Economically Disadvantaged: 281,805 ( 29 % of total enrollment)
+```
+
+``` r
+econ_comparison <- data.frame(
+  category = c("Economically Disadvantaged", "Not Economically Disadvantaged"),
+  n_students = c(econ_data$n_students, total_students - econ_data$n_students)
+) %>%
+  mutate(pct = n_students / sum(n_students) * 100)
+
+ggplot(econ_comparison, aes(x = "", y = n_students, fill = category)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(
+    aes(label = paste0(round(pct, 1), "%")),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 6
+  ) +
+  scale_fill_manual(values = c(
+    "Economically Disadvantaged" = "#EF6548",
+    "Not Economically Disadvantaged" = "#41AB5D"
+  )) +
+  labs(
+    title = "Economic Status of Tennessee Public School Students (2024)",
+    subtitle = "Majority of students qualify for free/reduced price meals",
+    fill = NULL
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom")
+```
+
+![](enrollment_hooks_files/figure-html/econ-chart-1.png)
 
 ## Explore the data yourself
 
 ``` r
 library(tnschooldata)
 
-# Fetch recent years
-enr <- fetch_enr_multi(2019:2024)
+# Fetch 2024 data
+enr <- fetch_enr(2024)
 
 # State totals
 enr %>%

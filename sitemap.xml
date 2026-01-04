@@ -5,6 +5,7 @@
 <url><loc>https://almartin82.github.io/tnschooldata/LICENSE.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/articles/enrollment_hooks.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/articles/index.html</loc></url>
+<url><loc>https://almartin82.github.io/tnschooldata/articles/quickstart.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/authors.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/index.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/aggregate_to_district.html</loc></url>
@@ -32,7 +33,6 @@
 <url><loc>https://almartin82.github.io/tnschooldata/reference/make_campus_id.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/pad_district_id.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/pad_school_id.html</loc></url>
-<url><loc>https://almartin82.github.io/tnschooldata/reference/pipe.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/process_asr_enrollment_table.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/process_district_enr.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/process_enr.html</loc></url>
