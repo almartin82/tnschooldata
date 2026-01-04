@@ -67,4 +67,3 @@
 utils::globalVariables(c(
   "grade_level", "n_students", "row_total", "subgroup", "type"
 ))
-

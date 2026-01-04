@@ -75,8 +75,8 @@ download_enrollment_modern <- function(end_year) {
   # - school-profile-YYYY-YYYY.xlsx (e.g., school-profile-2023-2024.xlsx)
   # - district-profile-YYYY-YYYY.xlsx
   start_year <- end_year - 1
-  school_year_label <- paste0(start_year, "-", end_year)
-  school_year_label_short <- paste0(start_year, "-", substr(as.character(end_year), 3, 4))
+  school_year_full <- paste0(start_year, "-", end_year)
+  school_year_label <- paste0(start_year, "-", substr(as.character(end_year), 3, 4))
 
   # Tennessee DOE data downloads page hosts files at tn.gov/content/dam/tn/education/data/
   base_url <- "https://www.tn.gov/content/dam/tn/education/data/"
@@ -85,31 +85,32 @@ download_enrollment_modern <- function(end_year) {
   # Priority order: most recent format first
   school_patterns <- c(
     # Current format (2024+): school-profile-YYYY-YYYY.xlsx
+    paste0("school-profile-", school_year_full, ".xlsx"),
     paste0("school-profile-", school_year_label, ".xlsx"),
-    paste0("school-profile-", start_year, "-", end_year, ".xlsx"),
     # Older formats
-    paste0("School_Profile_", school_year_label_short, ".xlsx"),
-    paste0("School_Membership_", school_year_label_short, ".xlsx"),
+    paste0("School_Profile_", school_year_label, ".xlsx"),
+    paste0("School_Membership_", school_year_label, ".xlsx"),
     paste0("Membership_", end_year, ".xlsx"),
     paste0("membership_", end_year, ".xlsx"),
-    paste0("school_membership_", school_year_label_short, ".xlsx")
+    paste0("school_membership_", school_year_label, ".xlsx")
   )
 
+  # District profile patterns
   district_patterns <- c(
     # Current format (2024+): district-profile-YYYY-YYYY.xlsx
+    paste0("district-profile-", school_year_full, ".xlsx"),
     paste0("district-profile-", school_year_label, ".xlsx"),
-    paste0("district-profile-", start_year, "-", end_year, ".xlsx"),
     # Older formats
-    paste0("District_Profile_", end_year, ".xlsx"),
+    paste0("District_Profile_", school_year_label, ".xlsx"),
     paste0("Profile_", end_year, ".xlsx"),
     paste0("profile_", end_year, ".xlsx")
   )
 
-  # Try to download school-level data
+  # Try to download school profile data
   message("  Downloading school profile data...")
   school_df <- try_download_patterns(base_url, school_patterns, end_year, "school")
 
-  # Try to download district-level data
+  # Try to download district profile data
   message("  Downloading district profile data...")
   district_df <- try_download_patterns(base_url, district_patterns, end_year, "district")
 
@@ -157,22 +158,19 @@ try_download_patterns <- function(base_url, patterns, end_year, file_type) {
     )
 
     result <- tryCatch({
-      response <- httr::GET(
-        url,
-        httr::write_disk(tname, overwrite = TRUE),
-        httr::timeout(120)
-      )
+      # Use curl package directly for SSL compatibility
+      h <- curl::new_handle()
+      curl::handle_setopt(h, ssl_verifypeer = 0, ssl_verifyhost = 0, timeout = 120)
+      curl::curl_download(url, tname, handle = h)
 
-      if (!httr::http_error(response)) {
-        # Check if we got actual Excel content
-        file_info <- file.info(tname)
-        if (file_info$size > 1000) {
-          # Try to read the file
-          df <- readxl::read_excel(tname, col_types = "text")
-          if (nrow(df) > 0) {
-            unlink(tname)
-            return(df)
-          }
+      # Check if we got actual Excel content
+      file_info <- file.info(tname)
+      if (!is.na(file_info$size) && file_info$size > 1000) {
+        # Try to read the file
+        df <- readxl::read_excel(tname, col_types = "text")
+        if (nrow(df) > 0) {
+          unlink(tname)
+          return(df)
         }
       }
       NULL
@@ -537,7 +535,7 @@ read_asr_enrollment_table <- function(extract_dir, end_year) {
     readxl::read_excel(enrollment_file, col_types = "text")
   }, error = function(e) {
     message(paste("  Error reading Excel file:", e$message))
-    return(NULL)
+    NULL
   })
 
   if (is.null(df) || nrow(df) == 0) {
@@ -571,7 +569,7 @@ process_asr_enrollment_table <- function(df, end_year) {
 
   # Find the header row (contains grade labels like K, 1ST, 2ND, etc.)
   header_row_idx <- NULL
-  for (i in 1:min(10, nrow(df))) {
+  for (i in seq_len(min(10, nrow(df)))) {
     row_vals <- toupper(as.character(unlist(df[i, ])))
     # Look for grade indicators
     if (any(grepl("^K$|^1ST$|^2ND$|^9TH$|^TOTAL$", row_vals, ignore.case = TRUE))) {
@@ -749,7 +747,8 @@ download_tdoe_file <- function(url, file_type) {
     response <- httr::GET(
       url,
       httr::write_disk(tname, overwrite = TRUE),
-      httr::timeout(120)
+      httr::timeout(120),
+      httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L)
     )
 
     if (httr::http_error(response)) {
