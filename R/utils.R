@@ -16,8 +16,7 @@ NULL
 #' @keywords internal
 safe_numeric <- function(x) {
   # Handle NULL or empty
-
-if (is.null(x) || length(x) == 0) {
+  if (is.null(x) || length(x) == 0) {
     return(numeric(0))
   }
 
