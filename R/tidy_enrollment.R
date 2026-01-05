@@ -62,7 +62,7 @@ tidy_enr <- function(df) {
           dplyr::select(dplyr::all_of(c(invariants, "n_students", "row_total"))) |>
           dplyr::mutate(
             subgroup = .x,
-            pct = n_students / row_total,
+            pct = dplyr::if_else(row_total > 0, n_students / row_total, NA_real_),
             grade_level = "TOTAL"
           ) |>
           dplyr::select(dplyr::all_of(c(invariants, "grade_level", "subgroup", "n_students", "pct")))
@@ -117,7 +117,7 @@ tidy_enr <- function(df) {
           dplyr::select(dplyr::all_of(c(invariants, "n_students", "row_total"))) |>
           dplyr::mutate(
             subgroup = "total_enrollment",
-            pct = n_students / row_total,
+            pct = dplyr::if_else(row_total > 0, n_students / row_total, NA_real_),
             grade_level = gl
           ) |>
           dplyr::select(dplyr::all_of(c(invariants, "grade_level", "subgroup", "n_students", "pct")))

@@ -12,3 +12,5 @@
 ^CLAUDE\.md$
 ^PRD\.md$
 ^py.*schooldata$
+^\.lintr$
+^EXPANSION\.md$

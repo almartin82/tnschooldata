@@ -27,7 +27,7 @@ process_enr <- function(raw_data, end_year) {
 
   # Check if district data already includes state row (modern format)
   # Modern format includes state row with type == "State"
-  if (any(district_processed$type == "State")) {
+  if (any(district_processed$type == "State", na.rm = TRUE)) {
     # State row already exists in district data - extract it
     state_processed <- district_processed[district_processed$type == "State", ]
     district_processed <- district_processed[district_processed$type == "District", ]
