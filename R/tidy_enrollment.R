@@ -62,7 +62,10 @@ tidy_enr <- function(df) {
           dplyr::select(dplyr::all_of(c(invariants, "n_students", "row_total"))) |>
           dplyr::mutate(
             subgroup = .x,
-            pct = dplyr::if_else(row_total > 0, n_students / row_total, NA_real_),
+            pct = dplyr::case_when(
+              row_total > 0 ~ pmin(n_students / row_total, 1.0),
+              TRUE ~ NA_real_
+            ),
             grade_level = "TOTAL"
           ) |>
           dplyr::select(dplyr::all_of(c(invariants, "grade_level", "subgroup", "n_students", "pct")))
@@ -117,7 +120,10 @@ tidy_enr <- function(df) {
           dplyr::select(dplyr::all_of(c(invariants, "n_students", "row_total"))) |>
           dplyr::mutate(
             subgroup = "total_enrollment",
-            pct = dplyr::if_else(row_total > 0, n_students / row_total, NA_real_),
+            pct = dplyr::case_when(
+              row_total > 0 ~ pmin(n_students / row_total, 1.0),
+              TRUE ~ NA_real_
+            ),
             grade_level = gl
           ) |>
           dplyr::select(dplyr::all_of(c(invariants, "grade_level", "subgroup", "n_students", "pct")))
@@ -129,7 +135,14 @@ tidy_enr <- function(df) {
 
   # Combine all tidy data
   dplyr::bind_rows(tidy_total, tidy_subgroups, tidy_grades) |>
-    dplyr::filter(!is.na(n_students))
+    dplyr::filter(!is.na(n_students)) |>
+    dplyr::mutate(
+      aggregation_flag = dplyr::case_when(
+        !is.na(district_id) & !is.na(campus_id) & district_id != "" & campus_id != "" ~ "campus",
+        !is.na(district_id) & district_id != "" ~ "district",
+        TRUE ~ "state"
+      )
+    )
 }
 
 
