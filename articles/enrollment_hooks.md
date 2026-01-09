@@ -13,7 +13,7 @@ theme_set(theme_minimal(base_size = 14))
 The Volunteer State serves a massive public school population.
 
 ``` r
-enr_2024 <- fetch_enr(2024)
+enr_2024 <- fetch_enr(2024, use_cache = TRUE)
 
 statewide <- enr_2024 %>%
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
@@ -457,7 +457,7 @@ ggplot(econ_comparison, aes(x = "", y = n_students, fill = category)) +
 library(tnschooldata)
 
 # Fetch 2024 data
-enr <- fetch_enr(2024)
+enr <- fetch_enr(2024, use_cache = TRUE)
 
 # State totals
 enr %>%
