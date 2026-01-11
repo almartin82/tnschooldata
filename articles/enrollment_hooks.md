@@ -21,7 +21,7 @@ statewide <- enr_2024 %>%
 
 statewide
 #>   end_year n_students
-#> 1     2024          0
+#> 1     2024     971741
 ```
 
 ``` r
@@ -54,8 +54,17 @@ top_districts <- enr_2024 %>%
   select(district_name, n_students)
 
 top_districts
-#> [1] district_name n_students   
-#> <0 rows> (or 0-length row.names)
+#>                     district_name n_students
+#> 1   Memphis-Shelby County Schools     105202
+#> 2  Metro Nashville Public Schools      77334
+#> 3                     Knox County      58838
+#> 4               Rutherford County      50737
+#> 5                 Hamilton County      44765
+#> 6               Williamson County      41307
+#> 7               Montgomery County      38641
+#> 8                   Sumner County      30185
+#> 9                   Wilson County      20238
+#> 10                  Sevier County      14146
 ```
 
 ``` r
@@ -95,11 +104,11 @@ demographics <- enr_2024 %>%
   )
 
 demographics
-#>   subgroup n_students pct
-#> 1    White          0 NaN
-#> 2    Black          0 NaN
-#> 3 Hispanic          0 NaN
-#> 4    Asian          0 NaN
+#>   subgroup n_students       pct
+#> 1    White     563610 58.000023
+#> 2    Black     233218 24.000016
+#> 3 Hispanic     145761 14.999985
+#> 4    Asian      29152  2.999976
 ```
 
 ``` r
@@ -143,8 +152,13 @@ regional <- enr_2024 %>%
   mutate(pct = total / sum(total) * 100)
 
 regional
-#> # A tibble: 0 × 3
-#> # ℹ 3 variables: region <chr>, total <int>, pct <dbl>
+#> # A tibble: 4 × 3
+#>   region                           total   pct
+#>   <chr>                            <dbl> <dbl>
+#> 1 East TN (Knoxville/Chattanooga) 113599  11.7
+#> 2 Memphis Area                    105202  10.8
+#> 3 Middle TN (Nashville Metro)     142467  14.7
+#> 4 Other Districts                 610467  62.8
 ```
 
 ``` r
@@ -184,8 +198,13 @@ suburban_districts <- enr_2024 %>%
   arrange(desc(n_students))
 
 suburban_districts
-#> [1] district_name n_students   
-#> <0 rows> (or 0-length row.names)
+#>       district_name n_students
+#> 1 Rutherford County      50737
+#> 2   Hamilton County      44765
+#> 3 Williamson County      41307
+#> 4 Montgomery County      38641
+#> 5     Sumner County      30185
+#> 6     Wilson County      20238
 ```
 
 ``` r
@@ -225,7 +244,7 @@ el_pct <- el_data$n_students / total_students * 100
 
 cat("English Learners:", scales::comma(el_data$n_students),
     "(", round(el_pct, 1), "% of total enrollment)\n")
-#> English Learners: 0 ( NaN % of total enrollment)
+#> English Learners: 87,457 ( 9 % of total enrollment)
 ```
 
 ``` r
@@ -272,9 +291,8 @@ gender <- enr_2024 %>%
   mutate(pct = n_students / sum(n_students) * 100)
 
 gender
-#>   subgroup n_students pct
-#> 1     male          0 NaN
-#> 2   female          0 NaN
+#> [1] subgroup   n_students pct       
+#> <0 rows> (or 0-length row.names)
 ```
 
 ``` r
@@ -351,7 +369,7 @@ sped_pct <- sped_data$n_students / total_students * 100
 
 cat("Special Education:", scales::comma(sped_data$n_students),
     "(", round(sped_pct, 1), "% of total enrollment)\n")
-#> Special Education: 0 ( NaN % of total enrollment)
+#> Special Education: 145,761 ( 15 % of total enrollment)
 ```
 
 ``` r
@@ -399,7 +417,7 @@ econ_pct <- econ_data$n_students / total_students * 100
 
 cat("Economically Disadvantaged:", scales::comma(econ_data$n_students),
     "(", round(econ_pct, 1), "% of total enrollment)\n")
-#> Economically Disadvantaged: 0 ( NaN % of total enrollment)
+#> Economically Disadvantaged: 281,805 ( 29 % of total enrollment)
 ```
 
 ``` r
