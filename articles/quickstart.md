@@ -166,3 +166,9 @@ enr_multi %>%
   select(end_year, n_students, pct) %>%
   mutate(pct = round(pct * 100, 1))
 ```
+
+## Session Info
+
+``` r
+sessionInfo()
+```
