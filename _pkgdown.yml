@@ -50,6 +50,20 @@ authors:
   Al Martin:
     href: https://github.com/almartin82
 
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+      - quickstart
+      - enrollment_hooks
+  - title: Internal
+    navbar: ~
+    contents:
+      - starts_with("CLAUDE")
+      - starts_with("EXPANSION")
+      - starts_with("PRD")
+      - starts_with("TODO")
+
 footer:
   structure:
     left: developed_by
