@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
   fig.height = 5,
   warning = FALSE,
   message = FALSE,
-  eval = FALSE
+  eval = TRUE,
+  cache = TRUE
 )
 ```
 
@@ -41,7 +42,7 @@ The main function is `fetch_enr()`. It downloads enrollment data from the Tennes
 
 ```{r fetch-basic}
 # Get 2024 data (2023-24 school year)
-enr_2024 <- fetch_enr(2024)
+enr_2024 <- fetch_enr(2024, use_cache = TRUE)
 
 # Check the structure
 head(enr_2024)
@@ -95,7 +96,7 @@ enr_2024 %>%
 Use `fetch_enr_multi()` to get data for multiple years:
 
 ```{r multi-year}
-enr_multi <- fetch_enr_multi(2019:2024)
+enr_multi <- fetch_enr_multi(2019:2024, use_cache = TRUE)
 
 # Track state enrollment over time
 enr_multi %>%
@@ -108,7 +109,7 @@ enr_multi %>%
 Use `tidy = FALSE` for wide format with one row per entity:
 
 ```{r wide}
-enr_wide <- fetch_enr(2024, tidy = FALSE)
+enr_wide <- fetch_enr(2024, tidy = FALSE, use_cache = TRUE)
 
 head(enr_wide)
 ```
@@ -173,7 +174,7 @@ enr_2024 %>%
 ### Track demographic changes
 
 ```{r demographic-trends}
-enr_multi <- fetch_enr_multi(c(2015, 2020, 2024))
+enr_multi <- fetch_enr_multi(c(2015, 2020, 2024), use_cache = TRUE)
 
 enr_multi %>%
   filter(is_state, grade_level == "TOTAL", subgroup == "hispanic") %>%

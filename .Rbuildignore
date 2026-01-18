@@ -14,3 +14,4 @@
 ^py.*schooldata$
 ^\.lintr$
 ^EXPANSION\.md$
+^vignettes/.*_cache$
