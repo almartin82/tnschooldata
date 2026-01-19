@@ -1,8 +1,8 @@
 ---
-title: "10 Insights from Tennessee School Enrollment Data"
+title: "15 Insights from Tennessee School Enrollment Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{10 Insights from Tennessee School Enrollment Data}
+  %\VignetteIndexEntry{15 Insights from Tennessee School Enrollment Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -410,6 +410,219 @@ ggplot(econ_comparison, aes(x = "", y = n_students, fill = category)) +
   ) +
   theme_void() +
   theme(legend.position = "bottom")
+```
+
+## 11. Metro Nashville serves more diverse students than the state average
+
+Davidson County is Tennessee's most cosmopolitan district.
+
+```{r davidson-diversity-data}
+davidson <- enr_2024 %>%
+  filter(is_district, grade_level == "TOTAL",
+         grepl("Davidson", district_name),
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(subgroup, n_students) %>%
+  mutate(pct = n_students / sum(n_students) * 100,
+         area = "Davidson County")
+
+state_demo <- enr_2024 %>%
+  filter(is_state, grade_level == "TOTAL",
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(subgroup, n_students) %>%
+  mutate(pct = n_students / sum(n_students) * 100,
+         area = "Tennessee State")
+
+comparison <- bind_rows(davidson, state_demo)
+comparison
+```
+
+```{r davidson-diversity-chart}
+ggplot(comparison, aes(x = pct, y = subgroup, fill = area)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = paste0(round(pct, 1), "%")),
+            position = position_dodge(width = 0.7),
+            hjust = -0.1, size = 3) +
+  scale_fill_manual(values = c("Davidson County" = "#41AB5D", "Tennessee State" = "#4292C6")) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.2))) +
+  labs(
+    title = "Davidson County vs Tennessee Demographics (2024)",
+    subtitle = "Nashville's diversity exceeds state averages",
+    x = "Percent of Students",
+    y = NULL,
+    fill = NULL
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## 12. Knox County is East Tennessee's education hub
+
+The Knoxville metro anchors educational opportunity in the eastern grand division.
+
+```{r knox-data}
+knox <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Knox", district_name)) %>%
+  select(district_name, n_students)
+
+knox
+
+east_tn_total <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Knox|Hamilton|Blount|Anderson|Sevier|Washington|Sullivan|Bradley", district_name)) %>%
+  summarize(total = sum(n_students, na.rm = TRUE))
+
+cat("Knox County share of major East TN districts:",
+    round(knox$n_students / east_tn_total$total * 100, 1), "%\n")
+```
+
+```{r knox-chart}
+east_tn_districts <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Knox|Hamilton|Blount|Anderson|Sevier|Washington|Sullivan|Bradley", district_name)) %>%
+  select(district_name, n_students) %>%
+  arrange(desc(n_students))
+
+ggplot(east_tn_districts, aes(x = n_students / 1000, y = reorder(district_name, n_students))) +
+  geom_col(fill = "#4292C6") +
+  geom_text(aes(label = scales::comma(n_students)), hjust = -0.1, size = 3.5) +
+  scale_x_continuous(
+    labels = scales::label_number(suffix = "K"),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "East Tennessee Major Districts (2024)",
+    subtitle = "Knox County dominates the region",
+    x = "Students (thousands)",
+    y = NULL
+  )
+```
+
+## 13. Tennessee has over 150 school districts
+
+A fragmented landscape of local control.
+
+```{r district-count-data}
+district_count <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  summarize(
+    n_districts = n(),
+    total_students = sum(n_students, na.rm = TRUE),
+    avg_size = mean(n_students, na.rm = TRUE),
+    median_size = median(n_students, na.rm = TRUE)
+  )
+
+district_count
+
+cat("Average district size:", scales::comma(round(district_count$avg_size)), "students\n")
+cat("Median district size:", scales::comma(round(district_count$median_size)), "students\n")
+```
+
+```{r district-size-distribution-chart}
+district_sizes <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  mutate(size_category = case_when(
+    n_students < 1000 ~ "Small (<1K)",
+    n_students < 5000 ~ "Medium (1-5K)",
+    n_students < 10000 ~ "Large (5-10K)",
+    n_students < 25000 ~ "Very Large (10-25K)",
+    TRUE ~ "Mega (25K+)"
+  )) %>%
+  count(size_category) %>%
+  mutate(size_category = factor(size_category, levels = c("Small (<1K)", "Medium (1-5K)",
+                                                          "Large (5-10K)", "Very Large (10-25K)",
+                                                          "Mega (25K+)")))
+
+ggplot(district_sizes, aes(x = n, y = size_category)) +
+  geom_col(fill = "#807DBA") +
+  geom_text(aes(label = n), hjust = -0.2, size = 4) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Distribution of Tennessee District Sizes (2024)",
+    subtitle = "Most districts are small to medium-sized",
+    x = "Number of Districts",
+    y = NULL
+  )
+```
+
+## 14. Hispanic students are the fastest-growing demographic
+
+Tennessee's Latino population is reshaping schools.
+
+```{r hispanic-growth-data}
+enr_multi <- fetch_enr_multi(c(2019, 2024), use_cache = TRUE)
+
+hispanic_trend <- enr_multi %>%
+  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic") %>%
+  select(end_year, n_students) %>%
+  arrange(end_year)
+
+hispanic_trend
+
+hispanic_change <- hispanic_trend %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = (n_students / lag(n_students) - 1) * 100)
+
+cat("Hispanic enrollment change (2019-2024):",
+    scales::comma(tail(hispanic_change$change, 1)), "students (",
+    round(tail(hispanic_change$pct_change, 1), 1), "% growth)\n")
+```
+
+```{r hispanic-growth-chart}
+demo_trend <- enr_multi %>%
+  filter(is_state, grade_level == "TOTAL",
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(end_year, subgroup, n_students)
+
+ggplot(demo_trend, aes(x = factor(end_year), y = n_students / 1000, fill = subgroup)) +
+  geom_col(position = "dodge") +
+  geom_text(aes(label = scales::comma(round(n_students / 1000))),
+            position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
+  scale_fill_manual(values = c("white" = "#FEE0D2", "black" = "#FC9272",
+                               "hispanic" = "#41AB5D", "asian" = "#4292C6"),
+                    labels = c("white" = "White", "black" = "Black",
+                               "hispanic" = "Hispanic", "asian" = "Asian")) +
+  scale_y_continuous(labels = scales::label_number(suffix = "K"),
+                     expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Tennessee Demographics: 2019 vs 2024",
+    subtitle = "Hispanic enrollment growing while other groups stable",
+    x = "Year",
+    y = "Students (thousands)",
+    fill = "Race/Ethnicity"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## 15. Rural districts face enrollment challenges
+
+Many Tennessee districts are shrinking.
+
+```{r rural-challenges-data}
+small_districts <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         n_students < 2000) %>%
+  arrange(n_students) %>%
+  head(10) %>%
+  select(district_name, n_students)
+
+small_districts
+
+cat("Districts with fewer than 2,000 students:",
+    sum(enr_2024$is_district & enr_2024$subgroup == "total_enrollment" &
+        enr_2024$grade_level == "TOTAL" & enr_2024$n_students < 2000, na.rm = TRUE), "\n")
+```
+
+```{r rural-challenges-chart}
+ggplot(small_districts, aes(x = n_students, y = reorder(district_name, n_students))) +
+  geom_col(fill = "#EF6548") +
+  geom_text(aes(label = scales::comma(n_students)), hjust = -0.1, size = 3.5) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.2))) +
+  labs(
+    title = "Tennessee's Smallest School Districts (2024)",
+    subtitle = "Rural districts serving fewer than 2,000 students",
+    x = "Total Students",
+    y = NULL
+  )
 ```
 
 ## Explore the data yourself
