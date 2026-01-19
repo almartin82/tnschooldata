@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>10 Insights from Tennessee School Enrollment Data • tnschooldata</title>
+<title>15 Insights from Tennessee School Enrollment Data • tnschooldata</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="10 Insights from Tennessee School Enrollment Data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="15 Insights from Tennessee School Enrollment Data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,7 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/quickstart.html">Getting Started with tnschooldata</a></li>
-    <li><a class="dropdown-item" href="../articles/enrollment_hooks.html">10 Insights from Tennessee School Enrollment Data</a></li>
+    <li><a class="dropdown-item" href="../articles/enrollment_hooks.html">15 Insights from Tennessee School Enrollment Data</a></li>
   </ul>
 </li>
       </ul>
@@ -56,7 +56,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>10 Insights from Tennessee School Enrollment Data</h1>
+      <h1>15 Insights from Tennessee School Enrollment Data</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/almartin82/tnschooldata/blob/main/vignettes/enrollment_hooks.Rmd" class="external-link"><code>vignettes/enrollment_hooks.Rmd</code></a></small>
@@ -477,9 +477,242 @@ district<a class="anchor" aria-label="anchor" href="#williamson-county-is-tennes
 <p><img src="enrollment_hooks_files/figure-html/econ-chart-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
+<h2 id="metro-nashville-serves-more-diverse-students-than-the-state-average">11. Metro Nashville serves more diverse students than the state
+average<a class="anchor" aria-label="anchor" href="#metro-nashville-serves-more-diverse-students-than-the-state-average"></a>
+</h2>
+<p>Davidson County is Tennessee’s most cosmopolitan district.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">davidson</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Davidson"</span>, <span class="va">district_name</span><span class="op">)</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>         area <span class="op">=</span> <span class="st">"Davidson County"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">state_demo</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>         area <span class="op">=</span> <span class="st">"Tennessee State"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">davidson</span>, <span class="va">state_demo</span><span class="op">)</span></span>
+<span><span class="va">comparison</span></span>
+<span><span class="co">#&gt;   subgroup n_students       pct            area</span></span>
+<span><span class="co">#&gt; 1    white     563610 58.000023 Tennessee State</span></span>
+<span><span class="co">#&gt; 2    black     233218 24.000016 Tennessee State</span></span>
+<span><span class="co">#&gt; 3 hispanic     145761 14.999985 Tennessee State</span></span>
+<span><span class="co">#&gt; 4    asian      29152  2.999976 Tennessee State</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">comparison</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pct</span>, y <span class="op">=</span> <span class="va">subgroup</span>, fill <span class="op">=</span> <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"dodge"</span>, width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">pct</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>,</span>
+<span>            hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Davidson County"</span> <span class="op">=</span> <span class="st">"#41AB5D"</span>, <span class="st">"Tennessee State"</span> <span class="op">=</span> <span class="st">"#4292C6"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Davidson County vs Tennessee Demographics (2024)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Nashville's diversity exceeds state averages"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Percent of Students"</span>,</span>
+<span>    y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    fill <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/davidson-diversity-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="knox-county-is-east-tennessees-education-hub">12. Knox County is East Tennessee’s education hub<a class="anchor" aria-label="anchor" href="#knox-county-is-east-tennessees-education-hub"></a>
+</h2>
+<p>The Knoxville metro anchors educational opportunity in the eastern
+grand division.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">knox</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Knox"</span>, <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">knox</span></span>
+<span><span class="co">#&gt;   district_name n_students</span></span>
+<span><span class="co">#&gt; 1   Knox County      58838</span></span>
+<span></span>
+<span><span class="va">east_tn_total</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Knox|Hamilton|Blount|Anderson|Sevier|Washington|Sullivan|Bradley"</span>, <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>total <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Knox County share of major East TN districts:"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">knox</span><span class="op">$</span><span class="va">n_students</span> <span class="op">/</span> <span class="va">east_tn_total</span><span class="op">$</span><span class="va">total</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Knox County share of major East TN districts: 36.9 %</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">east_tn_districts</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Knox|Hamilton|Blount|Anderson|Sevier|Washington|Sullivan|Bradley"</span>, <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">east_tn_districts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fl">1000</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#4292C6"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span>, hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, size <span class="op">=</span> <span class="fl">3.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"K"</span><span class="op">)</span>,</span>
+<span>    expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"East Tennessee Major Districts (2024)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Knox County dominates the region"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Students (thousands)"</span>,</span>
+<span>    y <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/knox-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="tennessee-has-over-150-school-districts">13. Tennessee has over 150 school districts<a class="anchor" aria-label="anchor" href="#tennessee-has-over-150-school-districts"></a>
+</h2>
+<p>A fragmented landscape of local control.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">district_count</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span></span>
+<span>    n_districts <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    total_students <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    avg_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    median_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">district_count</span></span>
+<span><span class="co">#&gt;   n_districts total_students avg_size median_size</span></span>
+<span><span class="co">#&gt; 1         147         971735 6610.442        2961</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Average district size:"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">district_count</span><span class="op">$</span><span class="va">avg_size</span><span class="op">)</span><span class="op">)</span>, <span class="st">"students\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Average district size: 6,610 students</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Median district size:"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">district_count</span><span class="op">$</span><span class="va">median_size</span><span class="op">)</span><span class="op">)</span>, <span class="st">"students\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Median district size: 2,961 students</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">district_sizes</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_category <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">1000</span> <span class="op">~</span> <span class="st">"Small (&lt;1K)"</span>,</span>
+<span>    <span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">5000</span> <span class="op">~</span> <span class="st">"Medium (1-5K)"</span>,</span>
+<span>    <span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">10000</span> <span class="op">~</span> <span class="st">"Large (5-10K)"</span>,</span>
+<span>    <span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">25000</span> <span class="op">~</span> <span class="st">"Very Large (10-25K)"</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"Mega (25K+)"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">size_category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">size_category</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Small (&lt;1K)"</span>, <span class="st">"Medium (1-5K)"</span>,</span>
+<span>                                                          <span class="st">"Large (5-10K)"</span>, <span class="st">"Very Large (10-25K)"</span>,</span>
+<span>                                                          <span class="st">"Mega (25K+)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">district_sizes</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n</span>, y <span class="op">=</span> <span class="va">size_category</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#807DBA"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">n</span><span class="op">)</span>, hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Distribution of Tennessee District Sizes (2024)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Most districts are small to medium-sized"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Number of Districts"</span>,</span>
+<span>    y <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/district-size-distribution-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="hispanic-students-are-the-fastest-growing-demographic">14. Hispanic students are the fastest-growing demographic<a class="anchor" aria-label="anchor" href="#hispanic-students-are-the-fastest-growing-demographic"></a>
+</h2>
+<p>Tennessee’s Latino population is reshaping schools.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">enr_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2024</span><span class="op">)</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hispanic_trend</span> <span class="op">&lt;-</span> <span class="va">enr_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"hispanic"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hispanic_trend</span></span>
+<span><span class="co">#&gt;   end_year n_students</span></span>
+<span><span class="co">#&gt; 1     2019          0</span></span>
+<span><span class="co">#&gt; 2     2024     145761</span></span>
+<span></span>
+<span><span class="va">hispanic_change</span> <span class="op">&lt;-</span> <span class="va">hispanic_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
+<span>         pct_change <span class="op">=</span> <span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Hispanic enrollment change (2019-2024):"</span>,</span>
+<span>    <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">hispanic_change</span><span class="op">$</span><span class="va">change</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="st">"students ("</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">hispanic_change</span><span class="op">$</span><span class="va">pct_change</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% growth)\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Hispanic enrollment change (2019-2024): 145,761 students ( Inf % growth)</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">demo_trend</span> <span class="op">&lt;-</span> <span class="va">enr_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">demo_trend</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fl">1000</span>, fill <span class="op">=</span> <span class="va">subgroup</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"dodge"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span> <span class="op">=</span> <span class="st">"#FEE0D2"</span>, <span class="st">"black"</span> <span class="op">=</span> <span class="st">"#FC9272"</span>,</span>
+<span>                               <span class="st">"hispanic"</span> <span class="op">=</span> <span class="st">"#41AB5D"</span>, <span class="st">"asian"</span> <span class="op">=</span> <span class="st">"#4292C6"</span><span class="op">)</span>,</span>
+<span>                    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span> <span class="op">=</span> <span class="st">"White"</span>, <span class="st">"black"</span> <span class="op">=</span> <span class="st">"Black"</span>,</span>
+<span>                               <span class="st">"hispanic"</span> <span class="op">=</span> <span class="st">"Hispanic"</span>, <span class="st">"asian"</span> <span class="op">=</span> <span class="st">"Asian"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"K"</span><span class="op">)</span>,</span>
+<span>                     expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Tennessee Demographics: 2019 vs 2024"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Hispanic enrollment growing while other groups stable"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Year"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Students (thousands)"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"Race/Ethnicity"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/hispanic-growth-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
+<h2 id="rural-districts-face-enrollment-challenges">15. Rural districts face enrollment challenges<a class="anchor" aria-label="anchor" href="#rural-districts-face-enrollment-challenges"></a>
+</h2>
+<p>Many Tennessee districts are shrinking.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">small_districts</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">2000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">small_districts</span></span>
+<span><span class="co">#&gt;                           district_name n_students</span></span>
+<span><span class="co">#&gt; 1    West Tennessee School for the Deaf         25</span></span>
+<span><span class="co">#&gt; 2            Tennessee School for Blind        113</span></span>
+<span><span class="co">#&gt; 3        Tennessee Schools for the Deaf        127</span></span>
+<span><span class="co">#&gt; 4                          Richard City        187</span></span>
+<span><span class="co">#&gt; 5                         South Carroll        319</span></span>
+<span><span class="co">#&gt; 6                                Etowah        328</span></span>
+<span><span class="co">#&gt; 7                                 Bells        369</span></span>
+<span><span class="co">#&gt; 8  Alvin C. York Agricultural Institute        477</span></span>
+<span><span class="co">#&gt; 9                                 Alamo        530</span></span>
+<span><span class="co">#&gt; 10                       Pickett County        564</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Districts with fewer than 2,000 students:"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">enr_2024</span><span class="op">$</span><span class="va">is_district</span> <span class="op">&amp;</span> <span class="va">enr_2024</span><span class="op">$</span><span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span> <span class="op">&amp;</span></span>
+<span>        <span class="va">enr_2024</span><span class="op">$</span><span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span> <span class="op">&amp;</span> <span class="va">enr_2024</span><span class="op">$</span><span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">2000</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Districts with fewer than 2,000 students: 50</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">small_districts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n_students</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#EF6548"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span>, hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, size <span class="op">=</span> <span class="fl">3.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Tennessee's Smallest School Districts (2024)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Rural districts serving fewer than 2,000 students"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Total Students"</span>,</span>
+<span>    y <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment_hooks_files/figure-html/rural-challenges-chart-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
 <h2 id="explore-the-data-yourself">Explore the data yourself<a class="anchor" aria-label="anchor" href="#explore-the-data-yourself"></a>
 </h2>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/tnschooldata">tnschooldata</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Fetch 2024 data</span></span>
@@ -500,7 +733,7 @@ examples.</p>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
