@@ -7,7 +7,7 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-Fetch and analyze Tennessee school enrollment data from the Tennessee Department of Education (TDOE) in R or Python.
+Fetch and analyze Tennessee school enrollment and assessment data from the Tennessee Department of Education (TDOE) in R or Python.
 
 **Part of the [njschooldata](https://github.com/almartin82/njschooldata) family** - a simple, consistent interface for accessing state-published school data.
 
@@ -548,6 +548,64 @@ enr_multi = tn.fetch_enr_multi([2020, 2021, 2022, 2023, 2024])
 years = tn.get_available_years()
 print(f"Data available: {years['min_year']}-{years['max_year']}")
 ```
+
+## Assessment Data (TCAP)
+
+**NEW!** In addition to enrollment data, tnschooldata now includes Tennessee assessment data (TCAP and EOC exams).
+
+### Assessment Quick Start - R
+
+```r
+library(tnschooldata)
+
+# Get 2024 assessment data
+assess_2024 <- fetch_assessment(2024)
+
+# Get state-level proficiency rates
+assess_2024 %>%
+  dplyr::filter(is_state, subgroup == "All Students", subject == "Math") %>%
+  dplyr::filter(proficiency_level %in% c("on_track", "mastered")) %>%
+  dplyr::summarize(pct_proficient = sum(pct, na.rm = TRUE))
+
+# Get multiple years (2020 excluded due to COVID waiver)
+assess_multi <- fetch_assessment_multi(c(2019, 2021, 2022, 2023, 2024))
+
+# Check available assessment years
+get_available_assessment_years()
+```
+
+### Assessment Quick Start - Python
+
+```python
+import pytnschooldata as tn
+
+# Fetch 2024 assessment data
+assess = tn.fetch_assessment(2024)
+
+# Filter to state-level Math results
+state_math = assess[
+    (assess['is_state']) &
+    (assess['subject'] == 'Math') &
+    (assess['subgroup'] == 'All Students')
+]
+
+# Get proficiency rate (on_track + mastered)
+proficient = state_math[
+    state_math['proficiency_level'].isin(['on_track', 'mastered'])
+]['pct'].sum()
+print(f"Math Proficiency: {proficient*100:.1f}%")
+```
+
+### Assessment Data Notes
+
+- **Available years**: 2019, 2021-2025 (no 2020 due to COVID testing waiver)
+- **Proficiency levels**: Below, Approaching, On Track, Mastered
+- **Subjects**: ELA, Math, Science, Social Studies (grades 3-8) plus EOC courses
+- **Suppression**: Results with fewer than 10 students are suppressed
+
+See the [full assessment analysis](https://almartin82.github.io/tnschooldata/articles/assessment_analysis.html) for 15 insights from Tennessee TCAP data.
+
+---
 
 ## Data Notes
 
