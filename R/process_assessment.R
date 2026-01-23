@@ -173,14 +173,18 @@ process_assessment_level <- function(df, end_year, type) {
     result$pct_approaching <- rep(NA_real_, n_rows)
   }
 
-  pct_ontrack_col <- find_col(c("^pct_on_track$", "^percent_on_track$", "^on_track_pct$", "^on_track$", "^pct_ontrack$"))
+  # TDOE uses "met_expectations" for "on_track"
+  pct_ontrack_col <- find_col(c("^pct_on_track$", "^percent_on_track$", "^on_track_pct$", "^on_track$", "^pct_ontrack$",
+                                 "^pct_met_expectations$", "^percent_met_expectations$", "^met_expectations$"))
   if (!is.null(pct_ontrack_col)) {
     result$pct_on_track <- safe_numeric(df[[pct_ontrack_col]])
   } else {
     result$pct_on_track <- rep(NA_real_, n_rows)
   }
 
-  pct_mastered_col <- find_col(c("^pct_mastered$", "^percent_mastered$", "^mastered_pct$", "^mastered$"))
+  # TDOE uses "exceeded_expectations" for "mastered"
+  pct_mastered_col <- find_col(c("^pct_mastered$", "^percent_mastered$", "^mastered_pct$", "^mastered$",
+                                  "^pct_exceeded_expectations$", "^percent_exceeded_expectations$", "^exceeded_expectations$"))
   if (!is.null(pct_mastered_col)) {
     result$pct_mastered <- safe_numeric(df[[pct_mastered_col]])
   } else {
@@ -188,8 +192,10 @@ process_assessment_level <- function(df, end_year, type) {
   }
 
   # Combined on track + mastered (proficient)
+  # TDOE uses "met_exceeded" for combined proficient rate
   pct_proficient_col <- find_col(c("^pct_on_mastered$", "^pct_proficient$", "^percent_proficient$",
-                                    "^pct_on_track_mastered$", "^on_track_mastered$"))
+                                    "^pct_on_track_mastered$", "^on_track_mastered$",
+                                    "^pct_met_exceeded$", "^percent_met_exceeded$", "^met_exceeded$"))
   if (!is.null(pct_proficient_col)) {
     result$pct_proficient <- safe_numeric(df[[pct_proficient_col]])
   } else {

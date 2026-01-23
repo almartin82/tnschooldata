@@ -16,12 +16,13 @@ Depends:
 Imports:
     curl,
     dplyr,
-    readxl,
-    purrr,
-    stringr,
-    rlang,
     httr,
-    rappdirs
+    purrr,
+    rappdirs,
+    readr,
+    readxl,
+    rlang,
+    stringr
 Suggests:
     testthat (>= 3.0.0),
     knitr,
