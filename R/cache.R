@@ -40,6 +40,70 @@ get_cache_path <- function(end_year, type) {
 }
 
 
+#' Get assessment cache file path for given year and type
+#'
+#' @param end_year School year end
+#' @param type Data type ("tidy" or "wide")
+#' @param level Optional level filter that was used ("all", "state", "district", "school")
+#' @return Full path to cache file
+#' @keywords internal
+get_assessment_cache_path <- function(end_year, type, level = "all") {
+  cache_dir <- get_cache_dir()
+  file.path(cache_dir, paste0("assessment_", type, "_", level, "_", end_year, ".rds"))
+}
+
+
+#' Check if cached assessment data exists and is valid
+#'
+#' @param end_year School year end
+#' @param type Data type ("tidy" or "wide")
+#' @param level Optional level filter that was used ("all", "state", "district", "school")
+#' @param max_age Maximum age in days (default 30)
+#' @return TRUE if valid cache exists
+#' @keywords internal
+assessment_cache_exists <- function(end_year, type, level = "all", max_age = 30) {
+  cache_path <- get_assessment_cache_path(end_year, type, level)
+
+  if (!file.exists(cache_path)) {
+    return(FALSE)
+  }
+
+  # Check age
+  file_info <- file.info(cache_path)
+  age_days <- as.numeric(difftime(Sys.time(), file_info$mtime, units = "days"))
+
+  age_days <= max_age
+}
+
+
+#' Read assessment data from cache
+#'
+#' @param end_year School year end
+#' @param type Data type ("tidy" or "wide")
+#' @param level Optional level filter that was used ("all", "state", "district", "school")
+#' @return Cached data frame
+#' @keywords internal
+read_assessment_cache <- function(end_year, type, level = "all") {
+  cache_path <- get_assessment_cache_path(end_year, type, level)
+  readRDS(cache_path)
+}
+
+
+#' Write assessment data to cache
+#'
+#' @param df Data frame to cache
+#' @param end_year School year end
+#' @param type Data type ("tidy" or "wide")
+#' @param level Optional level filter that was used ("all", "state", "district", "school")
+#' @return Invisibly returns the cache path
+#' @keywords internal
+write_assessment_cache <- function(df, end_year, type, level = "all") {
+  cache_path <- get_assessment_cache_path(end_year, type, level)
+  saveRDS(df, cache_path)
+  invisible(cache_path)
+}
+
+
 #' Check if cached data exists and is valid
 #'
 #' @param end_year School year end
@@ -158,12 +222,28 @@ cache_status <- function() {
   info <- file.info(files)
   info$file <- basename(files)
   info$year <- as.integer(gsub(".*_(\\d{4})\\.rds$", "\\1", info$file))
-  info$type <- gsub("^enr_(.*)_\\d{4}\\.rds$", "\\1", info$file)
+
+  # Determine data source and type from filename
+  # Enrollment: enr_tidy_2024.rds or enr_wide_2024.rds
+
+  # Assessment: assessment_tidy_all_2024.rds or assessment_wide_state_2024.rds
+  info$source <- ifelse(grepl("^assessment_", info$file), "assessment", "enrollment")
+  info$type <- ifelse(
+    info$source == "assessment",
+    gsub("^assessment_([^_]+)_.*\\.rds$", "\\1", info$file),
+    gsub("^enr_([^_]+)_.*\\.rds$", "\\1", info$file)
+  )
+  info$level <- ifelse(
+    info$source == "assessment",
+    gsub("^assessment_[^_]+_([^_]+)_.*\\.rds$", "\\1", info$file),
+    NA_character_
+  )
+
   info$size_mb <- round(info$size / 1024 / 1024, 2)
   info$age_days <- round(as.numeric(difftime(Sys.time(), info$mtime, units = "days")), 1)
 
-  result <- info[, c("year", "type", "size_mb", "age_days")]
-  result <- result[order(result$year, result$type), ]
+  result <- info[, c("source", "year", "type", "level", "size_mb", "age_days")]
+  result <- result[order(result$source, result$year, result$type), ]
   rownames(result) <- NULL
 
   print(result)
