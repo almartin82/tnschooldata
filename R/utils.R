@@ -102,3 +102,24 @@ get_available_years <- function() {
     modern_era = 2012:2024  # Modern TDOE data portal format
   )
 }
+
+
+#' Get available years for Tennessee assessment data
+#'
+#' Returns the years for which assessment data is available from TDOE.
+#' Note: 2020 data is not available due to COVID-19 testing waiver.
+#'
+#' @return Named list with min_year, max_year, years vector, and note about 2020
+#' @export
+#' @examples
+#' get_available_assessment_years()
+get_available_assessment_years <- function() {
+  list(
+    min_year = 2019,
+    max_year = 2025,
+    # 2020 excluded due to COVID testing waiver
+    years = c(2019, 2021:2025),
+    covid_waiver_year = 2020,
+    note = "2020 assessment data unavailable due to COVID-19 testing waiver"
+  )
+}
