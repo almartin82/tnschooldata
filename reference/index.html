@@ -20,6 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/quickstart.html">Getting Started with tnschooldata</a></li>
     <li><a class="dropdown-item" href="../articles/enrollment_hooks.html">15 Insights from Tennessee School Enrollment Data</a></li>
+    <li><a class="dropdown-item" href="../articles/assessment_analysis.html">Tennessee Assessment Data Analysis</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -36,7 +37,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="fetch-data">Fetch Data<a class="anchor" aria-label="anchor" href="#fetch-data"></a></h2>
+      <h2 id="fetch-enrollment-data">Fetch Enrollment Data<a class="anchor" aria-label="anchor" href="#fetch-enrollment-data"></a></h2>
 
       <div class="section-desc"><p>Functions for downloading enrollment data</p></div>
 
@@ -66,9 +67,53 @@
         </dt>
         <dd>Get available years for Tennessee enrollment data</dd>
       </dl></div><div class="section level2">
-      <h2 id="transform-data">Transform Data<a class="anchor" aria-label="anchor" href="#transform-data"></a></h2>
+      <h2 id="fetch-assessment-data">Fetch Assessment Data<a class="anchor" aria-label="anchor" href="#fetch-assessment-data"></a></h2>
 
-      <div class="section-desc"><p>Functions for transforming and aggregating data</p></div>
+      <div class="section-desc"><p>Functions for downloading assessment/TCAP data</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="fetch_assessment.html">fetch_assessment()</a></code>
+
+        </dt>
+        <dd>Fetch Tennessee assessment data</dd>
+
+        <dt>
+
+          <code><a href="fetch_assessment_multi.html">fetch_assessment_multi()</a></code>
+
+        </dt>
+        <dd>Fetch assessment data for multiple years</dd>
+
+        <dt>
+
+          <code><a href="fetch_district_assessment.html">fetch_district_assessment()</a></code>
+
+        </dt>
+        <dd>Get assessment data for a specific district</dd>
+
+        <dt>
+
+          <code><a href="fetch_school_assessment.html">fetch_school_assessment()</a></code>
+
+        </dt>
+        <dd>Get assessment data for a specific school</dd>
+
+        <dt>
+
+          <code><a href="get_available_assessment_years.html">get_available_assessment_years()</a></code>
+
+        </dt>
+        <dd>Get available years for Tennessee assessment data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="transform-enrollment-data">Transform Enrollment Data<a class="anchor" aria-label="anchor" href="#transform-enrollment-data"></a></h2>
+
+      <div class="section-desc"><p>Functions for transforming and aggregating enrollment data</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -95,6 +140,43 @@
 
         </dt>
         <dd>Custom Enrollment Grade Level Aggregates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="transform-assessment-data">Transform Assessment Data<a class="anchor" aria-label="anchor" href="#transform-assessment-data"></a></h2>
+
+      <div class="section-desc"><p>Functions for transforming and analyzing assessment data</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="tidy_assessment.html">tidy_assessment()</a></code>
+
+        </dt>
+        <dd>Tidy assessment data</dd>
+
+        <dt>
+
+          <code><a href="id_assessment_aggs.html">id_assessment_aggs()</a></code>
+
+        </dt>
+        <dd>Identify assessment aggregation levels</dd>
+
+        <dt>
+
+          <code><a href="assessment_summary.html">assessment_summary()</a></code>
+
+        </dt>
+        <dd>Calculate proficiency summary statistics</dd>
+
+        <dt>
+
+          <code><a href="calc_proficiency.html">calc_proficiency()</a></code>
+
+        </dt>
+        <dd>Calculate proficiency rates (on_track + mastered)</dd>
       </dl></div><div class="section level2">
       <h2 id="cache-management">Cache Management<a class="anchor" aria-label="anchor" href="#cache-management"></a></h2>
 
