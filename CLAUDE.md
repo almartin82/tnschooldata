@@ -178,6 +178,38 @@ pass.
 
 ------------------------------------------------------------------------
 
+## Valid Filter Values (tidy enrollment via `fetch_enr(tidy = TRUE)`)
+
+### subgroup
+
+`total_enrollment`, `white`, `black`, `hispanic`, `asian`,
+`native_american`, `pacific_islander`, `multiracial`, `male`, `female`,
+`special_ed`, `lep`, `econ_disadv`
+
+**NOT in tidy enrollment:** Gender subgroups (`male`, `female`) are
+defined in the code but only present when the raw data includes those
+columns. ASR-era data (1999-2011) has grade-level counts only, no
+demographic or gender breakdowns.
+
+### grade_level
+
+`PK`, `K`, `01`-`12`, `TOTAL`
+
+Grade aggregates from
+[`enr_grade_aggs()`](https://almartin82.github.io/tnschooldata/reference/enr_grade_aggs.md):
+`K8`, `HS`, `K12`
+
+**Note:** Raw column names like `grade_k`, `grade_01` etc. are mapped to
+`PK`, `K`, `01`-`12` in tidy output. Always filter on the mapped values.
+
+### entity flags
+
+`is_state`, `is_district`, `is_campus`
+
+Determined by the `type` column: `"State"`, `"District"`, `"Campus"`.
+
+------------------------------------------------------------------------
+
 ## README Images from Vignettes (REQUIRED)
 
 **NEVER use `man/figures/` or `generate_readme_figs.R` for README

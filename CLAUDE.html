@@ -188,6 +188,25 @@
 <hr></div>
 </div>
 <div class="section level2">
+<h2 id="valid-filter-values-tidy-enrollment-via-fetch_enrtidy--true">Valid Filter Values (tidy enrollment via <code>fetch_enr(tidy = TRUE)</code>)<a class="anchor" aria-label="anchor" href="#valid-filter-values-tidy-enrollment-via-fetch_enrtidy--true"></a></h2>
+<div class="section level3">
+<h3 id="subgroup">subgroup<a class="anchor" aria-label="anchor" href="#subgroup"></a></h3>
+<p><code>total_enrollment</code>, <code>white</code>, <code>black</code>, <code>hispanic</code>, <code>asian</code>, <code>native_american</code>, <code>pacific_islander</code>, <code>multiracial</code>, <code>male</code>, <code>female</code>, <code>special_ed</code>, <code>lep</code>, <code>econ_disadv</code></p>
+<p><strong>NOT in tidy enrollment:</strong> Gender subgroups (<code>male</code>, <code>female</code>) are defined in the code but only present when the raw data includes those columns. ASR-era data (1999-2011) has grade-level counts only, no demographic or gender breakdowns.</p>
+</div>
+<div class="section level3">
+<h3 id="grade_level">grade_level<a class="anchor" aria-label="anchor" href="#grade_level"></a></h3>
+<p><code>PK</code>, <code>K</code>, <code>01</code>-<code>12</code>, <code>TOTAL</code></p>
+<p>Grade aggregates from <code><a href="reference/enr_grade_aggs.html">enr_grade_aggs()</a></code>: <code>K8</code>, <code>HS</code>, <code>K12</code></p>
+<p><strong>Note:</strong> Raw column names like <code>grade_k</code>, <code>grade_01</code> etc. are mapped to <code>PK</code>, <code>K</code>, <code>01</code>-<code>12</code> in tidy output. Always filter on the mapped values.</p>
+</div>
+<div class="section level3">
+<h3 id="entity-flags">entity flags<a class="anchor" aria-label="anchor" href="#entity-flags"></a></h3>
+<p><code>is_state</code>, <code>is_district</code>, <code>is_campus</code></p>
+<p>Determined by the <code>type</code> column: <code>"State"</code>, <code>"District"</code>, <code>"Campus"</code>.</p>
+<hr></div>
+</div>
+<div class="section level2">
 <h2 id="readme-images-from-vignettes-required">README Images from Vignettes (REQUIRED)<a class="anchor" aria-label="anchor" href="#readme-images-from-vignettes-required"></a></h2>
 <p><strong>NEVER use <code>man/figures/</code> or <code>generate_readme_figs.R</code> for README images.</strong></p>
 <p>README images MUST come from pkgdown-generated vignette output so they auto-update on merge:</p>
