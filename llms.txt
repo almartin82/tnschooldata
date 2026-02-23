@@ -19,15 +19,16 @@ States](https://github.com/almartin82?tab=repositories&q=schooldata)**
 > from Tennessee Enrollment
 > Data](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks.html)
 
-**26 years of school data (1999-2024).** Nearly 1 million students
-across 150+ districts in the Volunteer State. Here are fifteen stories
-hiding in the numbers:
+**Tennessee enrollment data for the 2023-24 school year.** Nearly 1
+million students across 147 districts and 1,800+ campuses in the
+Volunteer State. Here are fifteen stories hiding in the numbers:
 
 ------------------------------------------------------------------------
 
 ### 1. Tennessee has nearly 1 million public school students
 
-The Volunteer State serves a massive public school population.
+The Volunteer State serves a massive public school population, just shy
+of the million mark.
 
 ``` r
 library(tnschooldata)
@@ -47,8 +48,8 @@ statewide
 
     # A tibble: 1 x 2
       end_year n_students
-         <int>      <int>
-    1     2024     996785
+         <int>      <dbl>
+    1     2024     971741
 
 ![Tennessee statewide
 enrollment](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png)
@@ -57,9 +58,10 @@ Tennessee statewide enrollment
 
 ------------------------------------------------------------------------
 
-### 2. Shelby County dwarfs all other districts
+### 2. Memphis-Shelby County Schools dwarfs all other districts
 
-Memphis’s district has more students than the next three combined.
+Memphis’s merged district has more students than Nashville and Knoxville
+combined.
 
 ``` r
 top_districts <- enr_2024 %>%
@@ -72,18 +74,18 @@ top_districts
 ```
 
     # A tibble: 10 x 2
-       district_name                 n_students
-       <chr>                              <int>
-     1 Shelby County                     103296
-     2 Davidson County                    78156
-     3 Knox County                        59486
-     4 Hamilton County                    45293
-     5 Rutherford County                  51426
-     6 Montgomery County                  36812
-     7 Sumner County                      31890
-     8 Williamson County                  43051
-     9 Wilson County                      22835
-    10 Sullivan County                    10765
+       district_name                          n_students
+       <chr>                                       <dbl>
+     1 Memphis-Shelby County Schools              105202
+     2 Metro Nashville Public Schools              77334
+     3 Knox County                                 58838
+     4 Rutherford County                           50737
+     5 Hamilton County                             44765
+     6 Williamson County                           41307
+     7 Montgomery County                           38641
+     8 Sumner County                               30185
+     9 Wilson County                               20238
+    10 Sevier County                               14146
 
 ![Top 10 Tennessee
 districts](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png)
@@ -92,9 +94,9 @@ Top 10 Tennessee districts
 
 ------------------------------------------------------------------------
 
-### 3. Tennessee’s diversity is growing
+### 3. Tennessee is 58% White, 24% Black, 15% Hispanic
 
-The state’s student population reflects changing demographics.
+The state’s student demographics show a substantial minority population.
 
 ``` r
 demographics <- enr_2024 %>%
@@ -113,11 +115,11 @@ demographics
 
     # A tibble: 4 x 3
       subgroup n_students   pct
-      <fct>         <int> <dbl>
-    1 White        599134  64.3
-    2 Black        199573  21.4
-    3 Hispanic     107624  11.6
-    4 Asian         25115   2.7
+      <fct>         <dbl> <dbl>
+    1 White        563610  58.0
+    2 Black        233218  24.0
+    3 Hispanic     145761  15.0
+    4 Asian         29152   3.0
 
 ![Demographics
 breakdown](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/demographics-chart-1.png)
@@ -126,13 +128,13 @@ Demographics breakdown
 
 ------------------------------------------------------------------------
 
-### 4. Middle Tennessee leads in enrollment
+### 4. Nashville metro anchors Middle Tennessee education
 
-Nashville and its suburbs are education powerhouses.
+Nashville and its suburban ring serve over 200,000 students.
 
 ``` r
-middle_tn <- c("Davidson", "Williamson", "Rutherford", "Wilson", "Sumner")
-memphis_area <- c("Shelby")
+middle_tn <- c("Metro Nashville", "Williamson", "Rutherford", "Wilson", "Sumner")
+memphis_area <- c("Memphis-Shelby")
 east_tn <- c("Knox", "Hamilton", "Blount")
 
 regional <- enr_2024 %>%
@@ -151,12 +153,12 @@ regional
 ```
 
     # A tibble: 4 x 3
-      region                           total   pct
-      <chr>                            <int> <dbl>
-    1 East TN (Knoxville/Chattanooga) 119546  12.0
-    2 Memphis Area                    103296  10.4
-    3 Middle TN (Nashville Metro)     227358  22.8
-    4 Other Districts                 546585  54.8
+      region                            total   pct
+      <chr>                             <dbl> <dbl>
+    1 East TN (Knoxville/Chattanooga)  113599  11.7
+    2 Memphis Area                     105202  10.8
+    3 Middle TN (Nashville Metro)      219801  22.6
+    4 Other Districts                  533133  54.9
 
 ![Regional
 enrollment](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/regional-chart-1.png)
@@ -165,9 +167,10 @@ Regional enrollment
 
 ------------------------------------------------------------------------
 
-### 5. Williamson County is Tennessee’s fastest-growing affluent district
+### 5. Rutherford County leads Tennessee’s suburban boom
 
-The Nashville suburb exemplifies suburban growth.
+Murfreesboro’s district has surpassed Hamilton County as the state’s
+third-largest.
 
 ``` r
 suburban_districts <- enr_2024 %>%
@@ -181,13 +184,13 @@ suburban_districts
 
     # A tibble: 6 x 2
       district_name     n_students
-      <chr>                  <int>
-    1 Rutherford County      51426
-    2 Hamilton County        45293
-    3 Williamson County      43051
-    4 Montgomery County      36812
-    5 Sumner County          31890
-    6 Wilson County          22835
+      <chr>                  <dbl>
+    1 Rutherford County      50737
+    2 Hamilton County        44765
+    3 Williamson County      41307
+    4 Montgomery County      38641
+    5 Sumner County          30185
+    6 Wilson County          20238
 
 ![Suburban
 districts](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/growth-chart-1.png)
@@ -196,9 +199,10 @@ Suburban districts
 
 ------------------------------------------------------------------------
 
-### 6. English Learners are transforming Tennessee classrooms
+### 6. Nashville is 29% English Learners – highest in the state
 
-A multilingual future is already here.
+Metro Nashville Public Schools has nearly 3x the state average English
+Learner rate.
 
 ``` r
 el_data <- enr_2024 %>%
@@ -215,7 +219,7 @@ cat("English Learners:", scales::comma(el_data$n_students),
     "(", round(el_pct, 1), "% of total enrollment)\n")
 ```
 
-    English Learners: 61,234 ( 6.1 % of total enrollment)
+    English Learners: 87,457 ( 9 % of total enrollment)
 
 ![English Learners by
 district](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/el-chart-1.png)
@@ -224,65 +228,95 @@ English Learners by district
 
 ------------------------------------------------------------------------
 
-### 7. Gender balance remains steady across Tennessee schools
+### 7. Memphis-Shelby has 53% economically disadvantaged students
 
-Boys slightly outnumber girls in public schools.
+The poverty gap between districts is stark – Memphis-Shelby’s rate is
+more than double Williamson County’s.
 
 ``` r
-gender <- enr_2024 %>%
-  filter(is_state, grade_level == "TOTAL",
-         subgroup %in% c("male", "female")) %>%
-  select(subgroup, n_students) %>%
-  mutate(pct = n_students / sum(n_students) * 100)
+econ_by_district <- enr_2024 %>%
+  filter(is_district, grade_level == "TOTAL", subgroup == "econ_disadv") %>%
+  left_join(
+    enr_2024 %>%
+      filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+      select(district_id, total = n_students),
+    by = "district_id"
+  ) %>%
+  mutate(pct = n_students / total * 100) %>%
+  filter(total > 10000) %>%
+  arrange(desc(pct)) %>%
+  head(10) %>%
+  select(district_name, n_students, total, pct)
 
-gender
+econ_by_district
 ```
 
-    # A tibble: 2 x 3
-      subgroup n_students   pct
-      <chr>         <int> <dbl>
-    1 female       483812  48.5
-    2 male         512973  51.5
+    # A tibble: 10 x 4
+       district_name                  n_students  total   pct
+       <chr>                               <dbl>  <dbl> <dbl>
+     1 Memphis-Shelby County Schools       55757 105202  53.0
+     2 Putnam County                        5524  11273  49.0
+     3 Madison County                       5246  11922  44.0
+     4 Hamilton County                     15220  44765  34.0
+     5 Metro Nashville Public Schools      23974  77334  31.0
+     6 Bradley County                       2713  10049  27.0
+     7 Maury County                         3307  12719  26.0
+     8 Robertson County                     2437  11078  22.0
+     9 Sevier County                        2971  14146  21.0
+    10 Montgomery County                    8115  38641  21.0
 
-![Gender
-distribution](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/gender-chart-1.png)
+![Poverty gap by
+district](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/poverty-gap-chart-1.png)
 
-Gender distribution
+Poverty gap by district
 
 ------------------------------------------------------------------------
 
-### 8. High school enrollment is substantial
+### 8. Tennessee has over 1,800 school campuses
 
-Secondary schools serve nearly 300,000 students.
+The state operates a vast network of schools, from tiny rural campuses
+to suburban mega-schools.
 
 ``` r
-grade_data <- enr_2024 %>%
-  filter(is_state, subgroup == "total_enrollment",
-         grade_level %in% c("K8", "HS")) %>%
-  select(grade_level, n_students) %>%
-  mutate(grade_level = factor(grade_level,
-    levels = c("K8", "HS"),
-    labels = c("K-8", "High School (9-12)")))
+campus_count <- enr_2024 %>%
+  filter(is_campus, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  nrow()
 
-grade_data
+top_campuses <- enr_2024 %>%
+  filter(is_campus, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(desc(n_students)) %>%
+  head(10) %>%
+  select(campus_name, district_name, n_students)
+
+cat("Total school campuses:", campus_count, "\n")
+top_campuses
 ```
 
-    # A tibble: 2 x 2
-      grade_level         n_students
-      <fct>                    <int>
-    1 K-8                     708543
-    2 High School (9-12)      288242
+    Total school campuses: 1818
+    # A tibble: 10 x 3
+       campus_name                district_name                  n_students
+       <chr>                      <chr>                               <dbl>
+     1 Collierville High School   Collierville                         2998
+     2 Bartlett High School       Bartlett                             2863
+     3 Stewarts Creek High School Rutherford County                    2446
+     4 Science Hill High School   Johnson City                         2423
+     5 Dobyns - Bennett High Sch  Kingsport                           2351
+     6 Smyrna High School         Rutherford County                    2254
+     7 Blackman High School       Rutherford County                    2233
+     8 Cordova High School        Memphis-Shelby County Schools        2194
+     9 Rockvale High School       Rutherford County                    2178
+    10 Cookeville High School     Putnam County                        2175
 
-![K-8 vs High
-School](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/grade-level-chart-1.png)
+![Largest
+campuses](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/campus-chart-1.png)
 
-K-8 vs High School
+Largest campuses
 
 ------------------------------------------------------------------------
 
-### 9. Special education serves a significant population
+### 9. 15% of Tennessee students receive special education services
 
-More students receiving specialized services.
+Over 145,000 students receive special education services statewide.
 
 ``` r
 sped_data <- enr_2024 %>%
@@ -295,7 +329,7 @@ cat("Special Education:", scales::comma(sped_data$n_students),
     "(", round(sped_pct, 1), "% of total enrollment)\n")
 ```
 
-    Special Education: 146,518 ( 14.7 % of total enrollment)
+    Special Education: 145,761 ( 15 % of total enrollment)
 
 ![Special education
 rates](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/sped-chart-1.png)
@@ -304,9 +338,10 @@ Special education rates
 
 ------------------------------------------------------------------------
 
-### 10. Economically disadvantaged students are the majority
+### 10. Nearly 1 in 3 Tennessee students is economically disadvantaged
 
-Over half of Tennessee students qualify for free/reduced lunch.
+About 29% of all students statewide qualify as economically
+disadvantaged.
 
 ``` r
 econ_data <- enr_2024 %>%
@@ -319,7 +354,7 @@ cat("Economically Disadvantaged:", scales::comma(econ_data$n_students),
     "(", round(econ_pct, 1), "% of total enrollment)\n")
 ```
 
-    Economically Disadvantaged: 538,264 ( 54.0 % of total enrollment)
+    Economically Disadvantaged: 281,805 ( 29 % of total enrollment)
 
 ![Economic
 status](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/econ-chart-1.png)
@@ -328,18 +363,19 @@ Economic status
 
 ------------------------------------------------------------------------
 
-### 11. Metro Nashville serves more diverse students than the state average
+### 11. Nashville is a majority-minority district – the state is not
 
-Davidson County is Tennessee’s most cosmopolitan district.
+Metro Nashville Public Schools is 38% Black, 34% Hispanic, and 24% White
+– a dramatic contrast with the 58% White statewide average.
 
 ``` r
-davidson <- enr_2024 %>%
+nashville <- enr_2024 %>%
   filter(is_district, grade_level == "TOTAL",
-         grepl("Davidson", district_name),
+         grepl("Metro Nashville", district_name),
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
   select(subgroup, n_students) %>%
   mutate(pct = n_students / sum(n_students) * 100,
-         area = "Davidson County")
+         area = "Metro Nashville")
 
 state_demo <- enr_2024 %>%
   filter(is_state, grade_level == "TOTAL",
@@ -348,33 +384,33 @@ state_demo <- enr_2024 %>%
   mutate(pct = n_students / sum(n_students) * 100,
          area = "Tennessee State")
 
-comparison <- bind_rows(davidson, state_demo)
+comparison <- bind_rows(nashville, state_demo)
 comparison
 ```
 
     # A tibble: 8 x 4
       subgroup n_students   pct area
-      <chr>         <int> <dbl> <chr>
-    1 asian          2834   4.0 Davidson County
-    2 black         29156  41.0 Davidson County
-    3 hispanic      21378  30.1 Davidson County
-    4 white         17712  24.9 Davidson County
-    5 asian         25115   2.7 Tennessee State
-    6 black        199573  21.4 Tennessee State
-    7 hispanic     107624  11.6 Tennessee State
-    8 white        599134  64.3 Tennessee State
+      <chr>         <dbl> <dbl> <chr>
+    1 white         18560  24.0 Metro Nashville
+    2 black         29387  38.0 Metro Nashville
+    3 hispanic      26294  34.0 Metro Nashville
+    4 asian          3093   4.0 Metro Nashville
+    5 white        563610  58.0 Tennessee State
+    6 black        233218  24.0 Tennessee State
+    7 hispanic     145761  15.0 Tennessee State
+    8 asian         29152   3.0 Tennessee State
 
-![Davidson vs State
-demographics](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/davidson-diversity-chart-1.png)
+![Nashville vs State
+demographics](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/nashville-diversity-chart-1.png)
 
-Davidson vs State demographics
+Nashville vs State demographics
 
 ------------------------------------------------------------------------
 
 ### 12. Knox County is East Tennessee’s education hub
 
-The Knoxville metro anchors educational opportunity in the eastern grand
-division.
+Knoxville’s district accounts for 37% of all students in the region’s
+major districts.
 
 ``` r
 knox <- enr_2024 %>%
@@ -395,9 +431,9 @@ cat("Knox County share of major East TN districts:",
 
     # A tibble: 1 x 2
       district_name n_students
-      <chr>              <int>
-    1 Knox County        59486
-    Knox County share of major East TN districts: 36.2 %
+      <chr>              <dbl>
+    1 Knox County        58838
+    Knox County share of major East TN districts: 36.9 %
 
 ![East Tennessee
 districts](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/knox-chart-1.png)
@@ -406,9 +442,10 @@ East Tennessee districts
 
 ------------------------------------------------------------------------
 
-### 13. Tennessee has over 150 school districts
+### 13. Tennessee has 147 school districts with a huge size gap
 
-A fragmented landscape of local control.
+The median district has just 2,961 students – less than half the 6,610
+average – showing extreme concentration.
 
 ``` r
 district_count <- enr_2024 %>%
@@ -428,10 +465,10 @@ cat("Median district size:", scales::comma(round(district_count$median_size)), "
 
     # A tibble: 1 x 4
       n_districts total_students avg_size median_size
-            <int>          <int>    <dbl>       <dbl>
-    1         152         996785    6558.       3425.
-    Average district size: 6,558 students
-    Median district size: 3,425 students
+            <int>          <dbl>    <dbl>       <dbl>
+    1         147         971735    6610.       2961.
+    Average district size: 6,610 students
+    Median district size: 2,961 students
 
 ![District size
 distribution](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/district-size-distribution-chart-1.png)
@@ -440,46 +477,44 @@ District size distribution
 
 ------------------------------------------------------------------------
 
-### 14. Hispanic students are the fastest-growing demographic
+### 14. Tennessee runs an Achievement School District and a state charter commission
 
-Tennessee’s Latino population is reshaping schools.
+Tennessee’s ASD and Public Charter School Commission together serve over
+9,000 students as state-run alternatives to traditional districts.
 
 ``` r
-enr_multi <- fetch_enr_multi(c(2019, 2024), use_cache = TRUE)
+special_districts <- enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL",
+         grepl("Achievement School District|Charter School Commission", district_name)) %>%
+  select(district_name, n_students)
 
-hispanic_trend <- enr_multi %>%
-  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic") %>%
-  select(end_year, n_students) %>%
-  arrange(end_year)
+special_districts
 
-hispanic_trend
-
-hispanic_change <- hispanic_trend %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = (n_students / lag(n_students) - 1) * 100)
-
-cat("Hispanic enrollment change (2019-2024):",
-    scales::comma(tail(hispanic_change$change, 1)), "students (",
-    round(tail(hispanic_change$pct_change, 1), 1), "% growth)\n")
+cat("Combined ASD + Charter Commission enrollment:",
+    sum(special_districts$n_students), "students\n")
+cat("Share of state total:",
+    round(sum(special_districts$n_students) / total_students * 100, 2), "%\n")
 ```
 
     # A tibble: 2 x 2
-      end_year n_students
-         <int>      <int>
-    1     2019      91234
-    2     2024     107624
-    Hispanic enrollment change (2019-2024): 16,390 students ( 18.0 % growth)
+      district_name                          n_students
+      <chr>                                       <dbl>
+    1 Achievement School District                  4456
+    2 Tennessee Public Charter School Commission   4796
+    Combined ASD + Charter Commission enrollment: 9252 students
+    Share of state total: 0.95 %
 
-![Demographic trends
-2019-2024](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/hispanic-growth-chart-1.png)
+![ASD and Charter
+Commission](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/asd-chart-1.png)
 
-Demographic trends 2019-2024
+ASD and Charter Commission
 
 ------------------------------------------------------------------------
 
-### 15. Rural districts face enrollment challenges
+### 15. Tennessee’s smallest districts serve fewer than 200 students
 
-Many Tennessee districts are shrinking.
+The state’s tiniest districts include specialized schools and rural
+communities.
 
 ``` r
 small_districts <- enr_2024 %>%
@@ -497,19 +532,19 @@ cat("Districts with fewer than 2,000 students:",
 ```
 
     # A tibble: 10 x 2
-       district_name           n_students
-       <chr>                        <int>
-     1 Richard City                   318
-     2 Alamo City                     492
-     3 Huntingdon SSD                 745
-     4 Hollow Rock-Bruceton           812
-     5 South Carroll SSD              856
-     6 McKenzie SSD                   945
-     7 Bradford SSD                   989
-     8 Oneida SSD                    1034
-     9 Humboldt City                 1156
-    10 Bells City                    1189
-    Districts with fewer than 2,000 students: 48
+       district_name                          n_students
+       <chr>                                       <dbl>
+     1 West Tennessee School for the Deaf             25
+     2 Tennessee School for Blind                    113
+     3 Tennessee Schools for the Deaf                127
+     4 Richard City                                  187
+     5 South Carroll                                 319
+     6 Etowah                                        328
+     7 Bells                                         369
+     8 Alvin C. York Agricultural Institute          477
+     9 Alamo                                         530
+    10 Pickett County                                564
+    Districts with fewer than 2,000 students: 50
 
 ![Smallest
 districts](https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/rural-challenges-chart-1.png)
@@ -543,17 +578,8 @@ library(tnschooldata)
 # Get 2024 enrollment data (2023-24 school year)
 enr_2024 <- fetch_enr(2024)
 
-# Get historical data from 2005 (2004-05 school year)
-enr_2005 <- fetch_enr(2005)
-
 # Get wide format (one row per school)
 enr_wide <- fetch_enr(2024, tidy = FALSE)
-
-# Get multiple years at once
-enr_multi <- fetch_enr_multi(2020:2024)
-
-# Get historical range (district-level only for pre-2012)
-enr_historical <- fetch_enr_multi(1999:2005)
 
 # Filter to specific district (Knox County)
 knox <- enr_2024 %>%
@@ -576,9 +602,6 @@ enr = tn.fetch_enr(2024)
 total = enr[enr['is_state'] & (enr['grade_level'] == 'TOTAL')]['n_students'].sum()
 print(f"{total:,} students")
 
-# Get multiple years
-enr_multi = tn.fetch_enr_multi([2020, 2021, 2022, 2023, 2024])
-
 # Check available years
 years = tn.get_available_years()
 print(f"Data available: {years['min_year']}-{years['max_year']}")
@@ -586,8 +609,8 @@ print(f"Data available: {years['min_year']}-{years['max_year']}")
 
 ## Assessment Data (TCAP)
 
-**NEW!** In addition to enrollment data, tnschooldata now includes
-Tennessee assessment data (TCAP and EOC exams).
+In addition to enrollment data, tnschooldata includes Tennessee
+assessment data (TCAP and EOC exams).
 
 ### Assessment Quick Start - R
 

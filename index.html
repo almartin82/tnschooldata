@@ -67,12 +67,12 @@
 <blockquote>
 <p><strong>See the full analysis with charts and data output:</strong> <a href="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks.html">15 Insights from Tennessee Enrollment Data</a></p>
 </blockquote>
-<p><strong>26 years of school data (1999-2024).</strong> Nearly 1 million students across 150+ districts in the Volunteer State. Here are fifteen stories hiding in the numbers:</p>
+<p><strong>Tennessee enrollment data for the 2023-24 school year.</strong> Nearly 1 million students across 147 districts and 1,800+ campuses in the Volunteer State. Here are fifteen stories hiding in the numbers:</p>
 <hr>
 <div class="section level3">
 <h3 id="id_1-tennessee-has-nearly-1-million-public-school-students">1. Tennessee has nearly 1 million public school students<a class="anchor" aria-label="anchor" href="#id_1-tennessee-has-nearly-1-million-public-school-students"></a>
 </h3>
-<p>The Volunteer State serves a massive public school population.</p>
+<p>The Volunteer State serves a massive public school population, just shy of the million mark.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/tnschooldata">tnschooldata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -89,17 +89,17 @@
 <span><span class="va">statewide</span></span></code></pre></div>
 <pre><code># A tibble: 1 x 2
   end_year n_students
-     &lt;int&gt;      &lt;int&gt;
-1     2024     996785</code></pre>
+     &lt;int&gt;      &lt;dbl&gt;
+1     2024     971741</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png" alt="Tennessee statewide enrollment"><div class="figcaption">Tennessee statewide enrollment</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_2-shelby-county-dwarfs-all-other-districts">2. Shelby County dwarfs all other districts<a class="anchor" aria-label="anchor" href="#id_2-shelby-county-dwarfs-all-other-districts"></a>
+<h3 id="id_2-memphis-shelby-county-schools-dwarfs-all-other-districts">2. Memphis-Shelby County Schools dwarfs all other districts<a class="anchor" aria-label="anchor" href="#id_2-memphis-shelby-county-schools-dwarfs-all-other-districts"></a>
 </h3>
-<p>Memphis’s district has more students than the next three combined.</p>
+<p>Memphis’s merged district has more students than Nashville and Knoxville combined.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_districts</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -109,27 +109,27 @@
 <span></span>
 <span><span class="va">top_districts</span></span></code></pre></div>
 <pre><code># A tibble: 10 x 2
-   district_name                 n_students
-   &lt;chr&gt;                              &lt;int&gt;
- 1 Shelby County                     103296
- 2 Davidson County                    78156
- 3 Knox County                        59486
- 4 Hamilton County                    45293
- 5 Rutherford County                  51426
- 6 Montgomery County                  36812
- 7 Sumner County                      31890
- 8 Williamson County                  43051
- 9 Wilson County                      22835
-10 Sullivan County                    10765</code></pre>
+   district_name                          n_students
+   &lt;chr&gt;                                       &lt;dbl&gt;
+ 1 Memphis-Shelby County Schools              105202
+ 2 Metro Nashville Public Schools              77334
+ 3 Knox County                                 58838
+ 4 Rutherford County                           50737
+ 5 Hamilton County                             44765
+ 6 Williamson County                           41307
+ 7 Montgomery County                           38641
+ 8 Sumner County                               30185
+ 9 Wilson County                               20238
+10 Sevier County                               14146</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png" alt="Top 10 Tennessee districts"><div class="figcaption">Top 10 Tennessee districts</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_3-tennessees-diversity-is-growing">3. Tennessee’s diversity is growing<a class="anchor" aria-label="anchor" href="#id_3-tennessees-diversity-is-growing"></a>
+<h3 id="id_3-tennessee-is-58-white-24-black-15-hispanic">3. Tennessee is 58% White, 24% Black, 15% Hispanic<a class="anchor" aria-label="anchor" href="#id_3-tennessee-is-58-white-24-black-15-hispanic"></a>
 </h3>
-<p>The state’s student population reflects changing demographics.</p>
+<p>The state’s student demographics show a substantial minority population.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demographics</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
@@ -145,23 +145,23 @@
 <span><span class="va">demographics</span></span></code></pre></div>
 <pre><code># A tibble: 4 x 3
   subgroup n_students   pct
-  &lt;fct&gt;         &lt;int&gt; &lt;dbl&gt;
-1 White        599134  64.3
-2 Black        199573  21.4
-3 Hispanic     107624  11.6
-4 Asian         25115   2.7</code></pre>
+  &lt;fct&gt;         &lt;dbl&gt; &lt;dbl&gt;
+1 White        563610  58.0
+2 Black        233218  24.0
+3 Hispanic     145761  15.0
+4 Asian         29152   3.0</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/demographics-chart-1.png" alt="Demographics breakdown"><div class="figcaption">Demographics breakdown</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_4-middle-tennessee-leads-in-enrollment">4. Middle Tennessee leads in enrollment<a class="anchor" aria-label="anchor" href="#id_4-middle-tennessee-leads-in-enrollment"></a>
+<h3 id="id_4-nashville-metro-anchors-middle-tennessee-education">4. Nashville metro anchors Middle Tennessee education<a class="anchor" aria-label="anchor" href="#id_4-nashville-metro-anchors-middle-tennessee-education"></a>
 </h3>
-<p>Nashville and its suburbs are education powerhouses.</p>
+<p>Nashville and its suburban ring serve over 200,000 students.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">middle_tn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Davidson"</span>, <span class="st">"Williamson"</span>, <span class="st">"Rutherford"</span>, <span class="st">"Wilson"</span>, <span class="st">"Sumner"</span><span class="op">)</span></span>
-<span><span class="va">memphis_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Shelby"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">middle_tn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Metro Nashville"</span>, <span class="st">"Williamson"</span>, <span class="st">"Rutherford"</span>, <span class="st">"Wilson"</span>, <span class="st">"Sumner"</span><span class="op">)</span></span>
+<span><span class="va">memphis_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Memphis-Shelby"</span><span class="op">)</span></span>
 <span><span class="va">east_tn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Knox"</span>, <span class="st">"Hamilton"</span>, <span class="st">"Blount"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">regional</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -178,21 +178,21 @@
 <span></span>
 <span><span class="va">regional</span></span></code></pre></div>
 <pre><code># A tibble: 4 x 3
-  region                           total   pct
-  &lt;chr&gt;                            &lt;int&gt; &lt;dbl&gt;
-1 East TN (Knoxville/Chattanooga) 119546  12.0
-2 Memphis Area                    103296  10.4
-3 Middle TN (Nashville Metro)     227358  22.8
-4 Other Districts                 546585  54.8</code></pre>
+  region                            total   pct
+  &lt;chr&gt;                             &lt;dbl&gt; &lt;dbl&gt;
+1 East TN (Knoxville/Chattanooga)  113599  11.7
+2 Memphis Area                     105202  10.8
+3 Middle TN (Nashville Metro)      219801  22.6
+4 Other Districts                  533133  54.9</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/regional-chart-1.png" alt="Regional enrollment"><div class="figcaption">Regional enrollment</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_5-williamson-county-is-tennessees-fastest-growing-affluent-district">5. Williamson County is Tennessee’s fastest-growing affluent district<a class="anchor" aria-label="anchor" href="#id_5-williamson-county-is-tennessees-fastest-growing-affluent-district"></a>
+<h3 id="id_5-rutherford-county-leads-tennessees-suburban-boom">5. Rutherford County leads Tennessee’s suburban boom<a class="anchor" aria-label="anchor" href="#id_5-rutherford-county-leads-tennessees-suburban-boom"></a>
 </h3>
-<p>The Nashville suburb exemplifies suburban growth.</p>
+<p>Murfreesboro’s district has surpassed Hamilton County as the state’s third-largest.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">suburban_districts</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -203,22 +203,22 @@
 <span><span class="va">suburban_districts</span></span></code></pre></div>
 <pre><code># A tibble: 6 x 2
   district_name     n_students
-  &lt;chr&gt;                  &lt;int&gt;
-1 Rutherford County      51426
-2 Hamilton County        45293
-3 Williamson County      43051
-4 Montgomery County      36812
-5 Sumner County          31890
-6 Wilson County          22835</code></pre>
+  &lt;chr&gt;                  &lt;dbl&gt;
+1 Rutherford County      50737
+2 Hamilton County        44765
+3 Williamson County      41307
+4 Montgomery County      38641
+5 Sumner County          30185
+6 Wilson County          20238</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/growth-chart-1.png" alt="Suburban districts"><div class="figcaption">Suburban districts</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_6-english-learners-are-transforming-tennessee-classrooms">6. English Learners are transforming Tennessee classrooms<a class="anchor" aria-label="anchor" href="#id_6-english-learners-are-transforming-tennessee-classrooms"></a>
+<h3 id="id_6-nashville-is-29-english-learners--highest-in-the-state">6. Nashville is 29% English Learners – highest in the state<a class="anchor" aria-label="anchor" href="#id_6-nashville-is-29-english-learners--highest-in-the-state"></a>
 </h3>
-<p>A multilingual future is already here.</p>
+<p>Metro Nashville Public Schools has nearly 3x the state average English Learner rate.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_data</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"lep"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -232,62 +232,90 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"English Learners:"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="va">el_data</span><span class="op">$</span><span class="va">n_students</span><span class="op">)</span>,</span>
 <span>    <span class="st">"("</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">el_pct</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% of total enrollment)\n"</span><span class="op">)</span></span></code></pre></div>
-<pre><code>English Learners: 61,234 ( 6.1 % of total enrollment)</code></pre>
+<pre><code>English Learners: 87,457 ( 9 % of total enrollment)</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/el-chart-1.png" alt="English Learners by district"><div class="figcaption">English Learners by district</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_7-gender-balance-remains-steady-across-tennessee-schools">7. Gender balance remains steady across Tennessee schools<a class="anchor" aria-label="anchor" href="#id_7-gender-balance-remains-steady-across-tennessee-schools"></a>
+<h3 id="id_7-memphis-shelby-has-53-economically-disadvantaged-students">7. Memphis-Shelby has 53% economically disadvantaged students<a class="anchor" aria-label="anchor" href="#id_7-memphis-shelby-has-53-economically-disadvantaged-students"></a>
 </h3>
-<p>Boys slightly outnumber girls in public schools.</p>
+<p>The poverty gap between districts is stark – Memphis-Shelby’s rate is more than double Williamson County’s.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gender</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
-<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">econ_by_district</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"econ_disadv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
+<span>    <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_id</span>, total <span class="op">=</span> <span class="va">n_students</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="st">"district_id"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="va">total</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">total</span> <span class="op">&gt;</span> <span class="fl">10000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">pct</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span>, <span class="va">total</span>, <span class="va">pct</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">gender</span></span></code></pre></div>
-<pre><code># A tibble: 2 x 3
-  subgroup n_students   pct
-  &lt;chr&gt;         &lt;int&gt; &lt;dbl&gt;
-1 female       483812  48.5
-2 male         512973  51.5</code></pre>
+<span><span class="va">econ_by_district</span></span></code></pre></div>
+<pre><code># A tibble: 10 x 4
+   district_name                  n_students  total   pct
+   &lt;chr&gt;                               &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+ 1 Memphis-Shelby County Schools       55757 105202  53.0
+ 2 Putnam County                        5524  11273  49.0
+ 3 Madison County                       5246  11922  44.0
+ 4 Hamilton County                     15220  44765  34.0
+ 5 Metro Nashville Public Schools      23974  77334  31.0
+ 6 Bradley County                       2713  10049  27.0
+ 7 Maury County                         3307  12719  26.0
+ 8 Robertson County                     2437  11078  22.0
+ 9 Sevier County                        2971  14146  21.0
+10 Montgomery County                    8115  38641  21.0</code></pre>
 <div class="float">
-<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/gender-chart-1.png" alt="Gender distribution"><div class="figcaption">Gender distribution</div>
+<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/poverty-gap-chart-1.png" alt="Poverty gap by district"><div class="figcaption">Poverty gap by district</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_8-high-school-enrollment-is-substantial">8. High school enrollment is substantial<a class="anchor" aria-label="anchor" href="#id_8-high-school-enrollment-is-substantial"></a>
+<h3 id="id_8-tennessee-has-over-1800-school-campuses">8. Tennessee has over 1,800 school campuses<a class="anchor" aria-label="anchor" href="#id_8-tennessee-has-over-1800-school-campuses"></a>
 </h3>
-<p>Secondary schools serve nearly 300,000 students.</p>
+<p>The state operates a vast network of schools, from tiny rural campuses to suburban mega-schools.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">grade_data</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>,</span>
-<span>         <span class="va">grade_level</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"K8"</span>, <span class="st">"HS"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">grade_level</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>grade_level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">grade_level</span>,</span>
-<span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"K8"</span>, <span class="st">"HS"</span><span class="op">)</span>,</span>
-<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"K-8"</span>, <span class="st">"High School (9-12)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">campus_count</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_campus</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">grade_data</span></span></code></pre></div>
-<pre><code># A tibble: 2 x 2
-  grade_level         n_students
-  &lt;fct&gt;                    &lt;int&gt;
-1 K-8                     708543
-2 High School (9-12)      288242</code></pre>
+<span><span class="va">top_campuses</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_campus</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">campus_name</span>, <span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Total school campuses:"</span>, <span class="va">campus_count</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="va">top_campuses</span></span></code></pre></div>
+<pre><code>Total school campuses: 1818
+# A tibble: 10 x 3
+   campus_name                district_name                  n_students
+   &lt;chr&gt;                      &lt;chr&gt;                               &lt;dbl&gt;
+ 1 Collierville High School   Collierville                         2998
+ 2 Bartlett High School       Bartlett                             2863
+ 3 Stewarts Creek High School Rutherford County                    2446
+ 4 Science Hill High School   Johnson City                         2423
+ 5 Dobyns - Bennett High Sch  Kingsport                           2351
+ 6 Smyrna High School         Rutherford County                    2254
+ 7 Blackman High School       Rutherford County                    2233
+ 8 Cordova High School        Memphis-Shelby County Schools        2194
+ 9 Rockvale High School       Rutherford County                    2178
+10 Cookeville High School     Putnam County                        2175</code></pre>
 <div class="float">
-<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/grade-level-chart-1.png" alt="K-8 vs High School"><div class="figcaption">K-8 vs High School</div>
+<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/campus-chart-1.png" alt="Largest campuses"><div class="figcaption">Largest campuses</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_9-special-education-serves-a-significant-population">9. Special education serves a significant population<a class="anchor" aria-label="anchor" href="#id_9-special-education-serves-a-significant-population"></a>
+<h3 id="id_9-15-of-tennessee-students-receive-special-education-services">9. 15% of Tennessee students receive special education services<a class="anchor" aria-label="anchor" href="#id_9-15-of-tennessee-students-receive-special-education-services"></a>
 </h3>
-<p>More students receiving specialized services.</p>
+<p>Over 145,000 students receive special education services statewide.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sped_data</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"special_ed"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -297,16 +325,16 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Special Education:"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="va">sped_data</span><span class="op">$</span><span class="va">n_students</span><span class="op">)</span>,</span>
 <span>    <span class="st">"("</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sped_pct</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% of total enrollment)\n"</span><span class="op">)</span></span></code></pre></div>
-<pre><code>Special Education: 146,518 ( 14.7 % of total enrollment)</code></pre>
+<pre><code>Special Education: 145,761 ( 15 % of total enrollment)</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/sped-chart-1.png" alt="Special education rates"><div class="figcaption">Special education rates</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_10-economically-disadvantaged-students-are-the-majority">10. Economically disadvantaged students are the majority<a class="anchor" aria-label="anchor" href="#id_10-economically-disadvantaged-students-are-the-majority"></a>
+<h3 id="id_10-nearly-1-in-3-tennessee-students-is-economically-disadvantaged">10. Nearly 1 in 3 Tennessee students is economically disadvantaged<a class="anchor" aria-label="anchor" href="#id_10-nearly-1-in-3-tennessee-students-is-economically-disadvantaged"></a>
 </h3>
-<p>Over half of Tennessee students qualify for free/reduced lunch.</p>
+<p>About 29% of all students statewide qualify as economically disadvantaged.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">econ_data</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"econ_disadv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -316,24 +344,24 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Economically Disadvantaged:"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="va">econ_data</span><span class="op">$</span><span class="va">n_students</span><span class="op">)</span>,</span>
 <span>    <span class="st">"("</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">econ_pct</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% of total enrollment)\n"</span><span class="op">)</span></span></code></pre></div>
-<pre><code>Economically Disadvantaged: 538,264 ( 54.0 % of total enrollment)</code></pre>
+<pre><code>Economically Disadvantaged: 281,805 ( 29 % of total enrollment)</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/econ-chart-1.png" alt="Economic status"><div class="figcaption">Economic status</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_11-metro-nashville-serves-more-diverse-students-than-the-state-average">11. Metro Nashville serves more diverse students than the state average<a class="anchor" aria-label="anchor" href="#id_11-metro-nashville-serves-more-diverse-students-than-the-state-average"></a>
+<h3 id="id_11-nashville-is-a-majority-minority-district--the-state-is-not">11. Nashville is a majority-minority district – the state is not<a class="anchor" aria-label="anchor" href="#id_11-nashville-is-a-majority-minority-district--the-state-is-not"></a>
 </h3>
-<p>Davidson County is Tennessee’s most cosmopolitan district.</p>
+<p>Metro Nashville Public Schools is 38% Black, 34% Hispanic, and 24% White – a dramatic contrast with the 58% White statewide average.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">davidson</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">nashville</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
-<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Davidson"</span>, <span class="va">district_name</span><span class="op">)</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Metro Nashville"</span>, <span class="va">district_name</span><span class="op">)</span>,</span>
 <span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
-<span>         area <span class="op">=</span> <span class="st">"Davidson County"</span><span class="op">)</span></span>
+<span>         area <span class="op">=</span> <span class="st">"Metro Nashville"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">state_demo</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
@@ -342,28 +370,28 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
 <span>         area <span class="op">=</span> <span class="st">"Tennessee State"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">davidson</span>, <span class="va">state_demo</span><span class="op">)</span></span>
+<span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">nashville</span>, <span class="va">state_demo</span><span class="op">)</span></span>
 <span><span class="va">comparison</span></span></code></pre></div>
 <pre><code># A tibble: 8 x 4
   subgroup n_students   pct area
-  &lt;chr&gt;         &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;
-1 asian          2834   4.0 Davidson County
-2 black         29156  41.0 Davidson County
-3 hispanic      21378  30.1 Davidson County
-4 white         17712  24.9 Davidson County
-5 asian         25115   2.7 Tennessee State
-6 black        199573  21.4 Tennessee State
-7 hispanic     107624  11.6 Tennessee State
-8 white        599134  64.3 Tennessee State</code></pre>
+  &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+1 white         18560  24.0 Metro Nashville
+2 black         29387  38.0 Metro Nashville
+3 hispanic      26294  34.0 Metro Nashville
+4 asian          3093   4.0 Metro Nashville
+5 white        563610  58.0 Tennessee State
+6 black        233218  24.0 Tennessee State
+7 hispanic     145761  15.0 Tennessee State
+8 asian         29152   3.0 Tennessee State</code></pre>
 <div class="float">
-<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/davidson-diversity-chart-1.png" alt="Davidson vs State demographics"><div class="figcaption">Davidson vs State demographics</div>
+<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/nashville-diversity-chart-1.png" alt="Nashville vs State demographics"><div class="figcaption">Nashville vs State demographics</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="id_12-knox-county-is-east-tennessees-education-hub">12. Knox County is East Tennessee’s education hub<a class="anchor" aria-label="anchor" href="#id_12-knox-county-is-east-tennessees-education-hub"></a>
 </h3>
-<p>The Knoxville metro anchors educational opportunity in the eastern grand division.</p>
+<p>Knoxville’s district accounts for 37% of all students in the region’s major districts.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">knox</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
@@ -381,18 +409,18 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">knox</span><span class="op">$</span><span class="va">n_students</span> <span class="op">/</span> <span class="va">east_tn_total</span><span class="op">$</span><span class="va">total</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code># A tibble: 1 x 2
   district_name n_students
-  &lt;chr&gt;              &lt;int&gt;
-1 Knox County        59486
-Knox County share of major East TN districts: 36.2 %</code></pre>
+  &lt;chr&gt;              &lt;dbl&gt;
+1 Knox County        58838
+Knox County share of major East TN districts: 36.9 %</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/knox-chart-1.png" alt="East Tennessee districts"><div class="figcaption">East Tennessee districts</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_13-tennessee-has-over-150-school-districts">13. Tennessee has over 150 school districts<a class="anchor" aria-label="anchor" href="#id_13-tennessee-has-over-150-school-districts"></a>
+<h3 id="id_13-tennessee-has-147-school-districts-with-a-huge-size-gap">13. Tennessee has 147 school districts with a huge size gap<a class="anchor" aria-label="anchor" href="#id_13-tennessee-has-147-school-districts-with-a-huge-size-gap"></a>
 </h3>
-<p>A fragmented landscape of local control.</p>
+<p>The median district has just 2,961 students – less than half the 6,610 average – showing extreme concentration.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">district_count</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -409,51 +437,47 @@ Knox County share of major East TN districts: 36.2 %</code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Median district size:"</span>, <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">district_count</span><span class="op">$</span><span class="va">median_size</span><span class="op">)</span><span class="op">)</span>, <span class="st">"students\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code># A tibble: 1 x 4
   n_districts total_students avg_size median_size
-        &lt;int&gt;          &lt;int&gt;    &lt;dbl&gt;       &lt;dbl&gt;
-1         152         996785    6558.       3425.
-Average district size: 6,558 students
-Median district size: 3,425 students</code></pre>
+        &lt;int&gt;          &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;
+1         147         971735    6610.       2961.
+Average district size: 6,610 students
+Median district size: 2,961 students</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/district-size-distribution-chart-1.png" alt="District size distribution"><div class="figcaption">District size distribution</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_14-hispanic-students-are-the-fastest-growing-demographic">14. Hispanic students are the fastest-growing demographic<a class="anchor" aria-label="anchor" href="#id_14-hispanic-students-are-the-fastest-growing-demographic"></a>
+<h3 id="id_14-tennessee-runs-an-achievement-school-district-and-a-state-charter-commission">14. Tennessee runs an Achievement School District and a state charter commission<a class="anchor" aria-label="anchor" href="#id_14-tennessee-runs-an-achievement-school-district-and-a-state-charter-commission"></a>
 </h3>
-<p>Tennessee’s Latino population is reshaping schools.</p>
+<p>Tennessee’s ASD and Public Charter School Commission together serve over 9,000 students as state-run alternatives to traditional districts.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">enr_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2024</span><span class="op">)</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">special_districts</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Achievement School District|Charter School Commission"</span>, <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">hispanic_trend</span> <span class="op">&lt;-</span> <span class="va">enr_multi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"hispanic"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span><span class="va">special_districts</span></span>
 <span></span>
-<span><span class="va">hispanic_trend</span></span>
-<span></span>
-<span><span class="va">hispanic_change</span> <span class="op">&lt;-</span> <span class="va">hispanic_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
-<span>         pct_change <span class="op">=</span> <span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Hispanic enrollment change (2019-2024):"</span>,</span>
-<span>    <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">hispanic_change</span><span class="op">$</span><span class="va">change</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="st">"students ("</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">hispanic_change</span><span class="op">$</span><span class="va">pct_change</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% growth)\n"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Combined ASD + Charter Commission enrollment:"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">special_districts</span><span class="op">$</span><span class="va">n_students</span><span class="op">)</span>, <span class="st">"students\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Share of state total:"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">special_districts</span><span class="op">$</span><span class="va">n_students</span><span class="op">)</span> <span class="op">/</span> <span class="va">total_students</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code># A tibble: 2 x 2
-  end_year n_students
-     &lt;int&gt;      &lt;int&gt;
-1     2019      91234
-2     2024     107624
-Hispanic enrollment change (2019-2024): 16,390 students ( 18.0 % growth)</code></pre>
+  district_name                          n_students
+  &lt;chr&gt;                                       &lt;dbl&gt;
+1 Achievement School District                  4456
+2 Tennessee Public Charter School Commission   4796
+Combined ASD + Charter Commission enrollment: 9252 students
+Share of state total: 0.95 %</code></pre>
 <div class="float">
-<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/hispanic-growth-chart-1.png" alt="Demographic trends 2019-2024"><div class="figcaption">Demographic trends 2019-2024</div>
+<img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/asd-chart-1.png" alt="ASD and Charter Commission"><div class="figcaption">ASD and Charter Commission</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_15-rural-districts-face-enrollment-challenges">15. Rural districts face enrollment challenges<a class="anchor" aria-label="anchor" href="#id_15-rural-districts-face-enrollment-challenges"></a>
+<h3 id="id_15-tennessees-smallest-districts-serve-fewer-than-200-students">15. Tennessee’s smallest districts serve fewer than 200 students<a class="anchor" aria-label="anchor" href="#id_15-tennessees-smallest-districts-serve-fewer-than-200-students"></a>
 </h3>
-<p>Many Tennessee districts are shrinking.</p>
+<p>The state’s tiniest districts include specialized schools and rural communities.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">small_districts</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
@@ -468,19 +492,19 @@ Hispanic enrollment change (2019-2024): 16,390 students ( 18.0 % growth)</code><
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">enr_2024</span><span class="op">$</span><span class="va">is_district</span> <span class="op">&amp;</span> <span class="va">enr_2024</span><span class="op">$</span><span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span> <span class="op">&amp;</span></span>
 <span>        <span class="va">enr_2024</span><span class="op">$</span><span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span> <span class="op">&amp;</span> <span class="va">enr_2024</span><span class="op">$</span><span class="va">n_students</span> <span class="op">&lt;</span> <span class="fl">2000</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code># A tibble: 10 x 2
-   district_name           n_students
-   &lt;chr&gt;                        &lt;int&gt;
- 1 Richard City                   318
- 2 Alamo City                     492
- 3 Huntingdon SSD                 745
- 4 Hollow Rock-Bruceton           812
- 5 South Carroll SSD              856
- 6 McKenzie SSD                   945
- 7 Bradford SSD                   989
- 8 Oneida SSD                    1034
- 9 Humboldt City                 1156
-10 Bells City                    1189
-Districts with fewer than 2,000 students: 48</code></pre>
+   district_name                          n_students
+   &lt;chr&gt;                                       &lt;dbl&gt;
+ 1 West Tennessee School for the Deaf             25
+ 2 Tennessee School for Blind                    113
+ 3 Tennessee Schools for the Deaf                127
+ 4 Richard City                                  187
+ 5 South Carroll                                 319
+ 6 Etowah                                        328
+ 7 Bells                                         369
+ 8 Alvin C. York Agricultural Institute          477
+ 9 Alamo                                         530
+10 Pickett County                                564
+Districts with fewer than 2,000 students: 50</code></pre>
 <div class="float">
 <img src="https://almartin82.github.io/tnschooldata/articles/enrollment_hooks_files/figure-html/rural-challenges-chart-1.png" alt="Smallest districts"><div class="figcaption">Smallest districts</div>
 </div>
@@ -515,17 +539,8 @@ Districts with fewer than 2,000 students: 48</code></pre>
 <span><span class="co"># Get 2024 enrollment data (2023-24 school year)</span></span>
 <span><span class="va">enr_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Get historical data from 2005 (2004-05 school year)</span></span>
-<span><span class="va">enr_2005</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2005</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># Get wide format (one row per school)</span></span>
 <span><span class="va">enr_wide</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span>, tidy <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get multiple years at once</span></span>
-<span><span class="va">enr_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2020</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get historical range (district-level only for pre-2012)</span></span>
-<span><span class="va">enr_historical</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">1999</span><span class="op">:</span><span class="fl">2005</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Filter to specific district (Knox County)</span></span>
 <span><span class="va">knox</span> <span class="op">&lt;-</span> <span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -547,18 +562,15 @@ Districts with fewer than 2,000 students: 48</code></pre>
 <span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>total <span class="op">=</span> enr[enr[<span class="st">'is_state'</span>] <span class="op">&amp;</span> (enr[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>)][<span class="st">'n_students'</span>].<span class="bu">sum</span>()</span>
 <span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>total<span class="sc">:,}</span><span class="ss"> students"</span>)</span>
 <span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a></span>
-<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a><span class="co"># Get multiple years</span></span>
-<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>enr_multi <span class="op">=</span> tn.fetch_enr_multi([<span class="dv">2020</span>, <span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>])</span>
-<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a></span>
-<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a><span class="co"># Check available years</span></span>
-<span id="cb34-14"><a href="#cb34-14" tabindex="-1"></a>years <span class="op">=</span> tn.get_available_years()</span>
-<span id="cb34-15"><a href="#cb34-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Data available: </span><span class="sc">{</span>years[<span class="st">'min_year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>years[<span class="st">'max_year'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a><span class="co"># Check available years</span></span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>years <span class="op">=</span> tn.get_available_years()</span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Data available: </span><span class="sc">{</span>years[<span class="st">'min_year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>years[<span class="st">'max_year'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="assessment-data-tcap">Assessment Data (TCAP)<a class="anchor" aria-label="anchor" href="#assessment-data-tcap"></a>
 </h2>
-<p><strong>NEW!</strong> In addition to enrollment data, tnschooldata now includes Tennessee assessment data (TCAP and EOC exams).</p>
+<p>In addition to enrollment data, tnschooldata includes Tennessee assessment data (TCAP and EOC exams).</p>
 <div class="section level3">
 <h3 id="assessment-quick-start---r">Assessment Quick Start - R<a class="anchor" aria-label="anchor" href="#assessment-quick-start---r"></a>
 </h3>
