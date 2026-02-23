@@ -77,8 +77,34 @@ fetch_enr <- function(end_year, tidy = TRUE, use_cache = TRUE) {
       id_enr_aggs()
   }
 
-  # Cache the result
-  if (use_cache) {
+  # If download produced empty/minimal data, try bundled fallback data.
+  # For modern era (2012+), also check that campus-level data is present --
+
+  # a partial download (district only) can exceed 100 rows but still be missing
+  # all school-level records.
+  needs_fallback <- nrow(processed) < 100
+  if (!needs_fallback && end_year >= 2012) {
+    has_campus <- if (tidy) {
+      "is_campus" %in% names(processed) && any(processed$is_campus, na.rm = TRUE)
+    } else {
+      "type" %in% names(processed) && any(processed$type == "Campus", na.rm = TRUE)
+    }
+    if (!has_campus) {
+      needs_fallback <- TRUE
+      message(paste("Download for", end_year, "missing campus data, trying bundled fallback..."))
+    }
+  }
+
+  if (needs_fallback) {
+    bundled <- load_bundled_enr(end_year, cache_type)
+    if (!is.null(bundled)) {
+      message(paste("Using bundled data for", end_year))
+      processed <- bundled
+    }
+  }
+
+  # Cache the result (only if we got real data)
+  if (use_cache && nrow(processed) >= 100) {
     write_cache(processed, end_year, cache_type)
   }
 
@@ -128,4 +154,26 @@ fetch_enr_multi <- function(end_years, tidy = TRUE, use_cache = TRUE) {
 
   # Combine
   dplyr::bind_rows(results)
+}
+
+
+#' Load bundled enrollment data as fallback
+#'
+#' When TDOE is unreachable and no local cache exists, falls back to
+#' bundled data included in the package. This ensures vignettes and
+#' CI can always render.
+#'
+#' @param end_year School year end
+#' @param cache_type "tidy" or "wide"
+#' @return Data frame or NULL if no bundled data available for the year
+#' @keywords internal
+load_bundled_enr <- function(end_year, cache_type) {
+  filename <- paste0("enr_", cache_type, "_", end_year, ".rds")
+  bundled_path <- system.file("extdata", filename, package = "tnschooldata")
+
+  if (bundled_path == "" || !file.exists(bundled_path)) {
+    return(NULL)
+  }
+
+  readRDS(bundled_path)
 }
