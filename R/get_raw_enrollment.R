@@ -209,10 +209,10 @@ download_from_report_card <- function(end_year) {
   # This endpoint provides enrollment data by school
   school_year_label <- paste0(end_year - 1, "-", substr(as.character(end_year), 3, 4))
 
-  # Generate synthetic data structure based on known Tennessee patterns
-  # This creates the expected column structure for processing
-  school_data <- generate_enrollment_request(end_year, "school")
-  district_data <- generate_enrollment_request(end_year, "district")
+  # Return empty data frames with expected column structure
+  # These will have 0 rows but correct columns for downstream processing
+  school_data <- create_empty_enrollment_frame(end_year, "school")
+  district_data <- create_empty_enrollment_frame(end_year, "district")
 
   list(
     school = school_data,
@@ -221,16 +221,16 @@ download_from_report_card <- function(end_year) {
 }
 
 
-#' Generate enrollment data request
+#' Create empty enrollment data frame
 #'
-#' Creates a data frame with proper column structure for enrollment data.
-#' Uses Tennessee's data portal download approach.
+#' Creates a 0-row data frame with proper column structure for enrollment data.
+#' Used as a fallback when data download fails or is unavailable.
 #'
 #' @param end_year School year end
 #' @param level "school" or "district"
 #' @return Data frame with enrollment data
 #' @keywords internal
-generate_enrollment_request <- function(end_year, level) {
+create_empty_enrollment_frame <- function(end_year, level) {
 
   # Tennessee DOE provides membership data through their data downloads page
   # We construct requests based on known file patterns
@@ -350,7 +350,7 @@ download_enrollment_legacy <- function(end_year) {
 
   if (is.null(school_data)) {
     # Return empty data with expected structure
-    school_data <- generate_enrollment_request(end_year, "school")
+    school_data <- create_empty_enrollment_frame(end_year, "school")
   }
 
   district_data <- aggregate_to_district(school_data)
@@ -445,8 +445,8 @@ download_enrollment_asr <- function(end_year) {
       message("  ASR download failed")
       unlink(zip_path)
       return(list(
-        school = generate_enrollment_request(end_year, "school"),
-        district = generate_enrollment_request(end_year, "district")
+        school = create_empty_enrollment_frame(end_year, "school"),
+        district = create_empty_enrollment_frame(end_year, "district")
       ))
     }
 
@@ -456,8 +456,8 @@ download_enrollment_asr <- function(end_year) {
       message("  ASR download failed, file too small")
       unlink(zip_path)
       return(list(
-        school = generate_enrollment_request(end_year, "school"),
-        district = generate_enrollment_request(end_year, "district")
+        school = create_empty_enrollment_frame(end_year, "school"),
+        district = create_empty_enrollment_frame(end_year, "district")
       ))
     }
 
@@ -474,7 +474,7 @@ download_enrollment_asr <- function(end_year) {
     unlink(extract_dir, recursive = TRUE)
 
     list(
-      school = generate_enrollment_request(end_year, "school"),  # No school-level data in ASR
+      school = create_empty_enrollment_frame(end_year, "school"),  # No school-level data in ASR
       district = district_data
     )
 
@@ -484,8 +484,8 @@ download_enrollment_asr <- function(end_year) {
     unlink(extract_dir, recursive = TRUE)
 
     list(
-      school = generate_enrollment_request(end_year, "school"),
-      district = generate_enrollment_request(end_year, "district")
+      school = create_empty_enrollment_frame(end_year, "school"),
+      district = create_empty_enrollment_frame(end_year, "district")
     )
   })
 
@@ -525,7 +525,7 @@ read_asr_enrollment_table <- function(extract_dir, end_year) {
 
   if (is.null(enrollment_file)) {
     message("  Could not find enrollment table in ASR archive")
-    return(generate_enrollment_request(end_year, "district"))
+    return(create_empty_enrollment_frame(end_year, "district"))
   }
 
   message(paste0("  Reading: ", basename(enrollment_file)))
@@ -539,7 +539,7 @@ read_asr_enrollment_table <- function(extract_dir, end_year) {
   })
 
   if (is.null(df) || nrow(df) == 0) {
-    return(generate_enrollment_request(end_year, "district"))
+    return(create_empty_enrollment_frame(end_year, "district"))
   }
 
   # Process the ASR table format
@@ -580,7 +580,7 @@ process_asr_enrollment_table <- function(df, end_year) {
 
   if (is.null(header_row_idx)) {
     message("  Could not identify header row in ASR table")
-    return(generate_enrollment_request(end_year, "district"))
+    return(create_empty_enrollment_frame(end_year, "district"))
   }
 
   # Extract column names from header row
@@ -634,7 +634,7 @@ process_asr_enrollment_table <- function(df, end_year) {
 
   if (length(data_rows) == 0) {
     message("  No data rows found in ASR table")
-    return(generate_enrollment_request(end_year, "district"))
+    return(create_empty_enrollment_frame(end_year, "district"))
   }
 
   # Build result data frame row by row to ensure correct extraction
@@ -679,7 +679,7 @@ process_asr_enrollment_table <- function(df, end_year) {
 aggregate_to_district <- function(school_df) {
 
   if (nrow(school_df) == 0) {
-    return(generate_enrollment_request(2024, "district"))
+    return(create_empty_enrollment_frame(2024, "district"))
   }
 
   # Identify numeric columns to sum
@@ -695,7 +695,7 @@ aggregate_to_district <- function(school_df) {
   district_name_col <- names(school_df)[grepl("^district.*name$|^dist.*name$", names(school_df), ignore.case = TRUE)][1]
 
   if (is.na(district_col)) {
-    return(generate_enrollment_request(2024, "district"))
+    return(create_empty_enrollment_frame(2024, "district"))
   }
 
   # Aggregate
