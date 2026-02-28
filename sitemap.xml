@@ -19,6 +19,7 @@
 <url><loc>https://almartin82.github.io/tnschooldata/reference/clear_cache.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/create_empty_assessment_raw.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/create_empty_assessment_result.html</loc></url>
+<url><loc>https://almartin82.github.io/tnschooldata/reference/create_empty_enrollment_frame.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/create_empty_result.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/create_empty_tidy_assessment.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/create_state_aggregate.html</loc></url>
@@ -35,7 +36,6 @@
 <url><loc>https://almartin82.github.io/tnschooldata/reference/fetch_enr.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/fetch_enr_multi.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/fetch_school_assessment.html</loc></url>
-<url><loc>https://almartin82.github.io/tnschooldata/reference/generate_enrollment_request.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/get_assessment_cache_path.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/get_assessment_url.html</loc></url>
 <url><loc>https://almartin82.github.io/tnschooldata/reference/get_available_assessment_years.html</loc></url>
