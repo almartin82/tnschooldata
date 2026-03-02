@@ -161,7 +161,7 @@ cat("Share of state total:",
 | **Enrollment** | 1999-2024 | `fetch_enr()` / `fetch_enr_multi()` | State, district, campus. Race, gender, FRPL, SpEd, LEP |
 | **Assessments** | 2019-2025 | `fetch_assessment()` / `fetch_assessment_multi()` | State, district, school. ELA, Math, Science, Social Studies, EOC |
 | Graduation | — | — | Not yet available |
-| Directory | — | — | Not yet available |
+| **Directory** | Current | `fetch_directory()` | District, school. Principal, superintendent, address, phone, grades |
 | Per-Pupil Spending | — | — | Not yet available |
 | Accountability | — | — | Not yet available |
 | Chronic Absence | — | — | Not yet available |
