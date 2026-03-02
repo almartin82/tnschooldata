@@ -52,6 +52,12 @@ reference:
       - assessment_summary
       - calc_proficiency
 
+  - title: Fetch Directory Data
+    desc: Functions for downloading school directory data
+    contents:
+      - fetch_directory
+      - clear_directory_cache
+
   - title: Cache Management
     desc: Functions for managing locally cached data
     contents:
