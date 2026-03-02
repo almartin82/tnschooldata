@@ -82,6 +82,8 @@
 <li>
 <strong>Historical data</strong>: ASR ZIP files from <a href="https://www.tn.gov/content/dam/tn/education/documents/asr/" class="external-link uri">https://www.tn.gov/content/dam/tn/education/documents/asr/</a>
 </li>
+<li>
+<strong>Directory data</strong>: TN School Directory API at <a href="https://tnschooldirectory.tnedu.gov/" class="external-link uri">https://tnschooldirectory.tnedu.gov/</a> (FetchXML/Dynamics 365 API)</li>
 </ul></div>
 <div class="section level2">
 <h2 id="test-coverage">Test Coverage<a class="anchor" aria-label="anchor" href="#test-coverage"></a></h2>
@@ -218,6 +220,33 @@
 <h3 id="entity-flags">entity flags<a class="anchor" aria-label="anchor" href="#entity-flags"></a></h3>
 <p><code>is_state</code>, <code>is_district</code>, <code>is_campus</code></p>
 <p>Determined by the <code>type</code> column: <code>"State"</code>, <code>"District"</code>, <code>"Campus"</code>.</p>
+<hr></div>
+</div>
+<div class="section level2">
+<h2 id="valid-filter-values-directory-via-fetch_directorytidy--true">Valid Filter Values (directory via <code>fetch_directory(tidy = TRUE)</code>)<a class="anchor" aria-label="anchor" href="#valid-filter-values-directory-via-fetch_directorytidy--true"></a></h2>
+<div class="section level3">
+<h3 id="entity_type">entity_type<a class="anchor" aria-label="anchor" href="#entity_type"></a></h3>
+<p><code>school</code>, <code>district</code></p>
+</div>
+<div class="section level3">
+<h3 id="school_type">school_type<a class="anchor" aria-label="anchor" href="#school_type"></a></h3>
+<p><code>Public</code>, <code>Private</code>, <code>Charter</code></p>
+</div>
+<div class="section level3">
+<h3 id="instructional_type">instructional_type<a class="anchor" aria-label="anchor" href="#instructional_type"></a></h3>
+<p><code>Regular</code>, <code>High School</code>, <code>Alternative</code>, <code>Special Education</code>, <code>Career/Technical</code></p>
+</div>
+<div class="section level3">
+<h3 id="status">status<a class="anchor" aria-label="anchor" href="#status"></a></h3>
+<p><code>Active</code>, <code>Inactive</code></p>
+</div>
+<div class="section level3">
+<h3 id="county_name">county_name<a class="anchor" aria-label="anchor" href="#county_name"></a></h3>
+<p>All 95 Tennessee counties plus special values like <code>Accredited Online Schools</code></p>
+</div>
+<div class="section level3">
+<h3 id="district_type">district_type<a class="anchor" aria-label="anchor" href="#district_type"></a></h3>
+<p><code>County</code>, <code>City</code>, <code>SSD</code> (Special School District), <code>Private Schools</code></p>
 <hr></div>
 </div>
 <div class="section level2">

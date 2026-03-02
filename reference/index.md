@@ -50,6 +50,15 @@ Functions for transforming and analyzing assessment data
 - [`calc_proficiency()`](https://almartin82.github.io/tnschooldata/reference/calc_proficiency.md)
   : Calculate proficiency rates (on_track + mastered)
 
+## Fetch Directory Data
+
+Functions for downloading school directory data
+
+- [`fetch_directory()`](https://almartin82.github.io/tnschooldata/reference/fetch_directory.md)
+  : Fetch Tennessee school directory data
+- [`clear_directory_cache()`](https://almartin82.github.io/tnschooldata/reference/clear_directory_cache.md)
+  : Clear school directory cache
+
 ## Cache Management
 
 Functions for managing locally cached data

@@ -64,6 +64,8 @@ Construction status — not fake data.
   <https://www.tn.gov/content/dam/tn/education/data/>
 - **Historical data**: ASR ZIP files from
   <https://www.tn.gov/content/dam/tn/education/documents/asr/>
+- **Directory data**: TN School Directory API at
+  <https://tnschooldirectory.tnedu.gov/> (FetchXML/Dynamics 365 API)
 
 ## Test Coverage
 
@@ -239,6 +241,36 @@ Grade aggregates from
 `is_state`, `is_district`, `is_campus`
 
 Determined by the `type` column: `"State"`, `"District"`, `"Campus"`.
+
+------------------------------------------------------------------------
+
+## Valid Filter Values (directory via `fetch_directory(tidy = TRUE)`)
+
+### entity_type
+
+`school`, `district`
+
+### school_type
+
+`Public`, `Private`, `Charter`
+
+### instructional_type
+
+`Regular`, `High School`, `Alternative`, `Special Education`,
+`Career/Technical`
+
+### status
+
+`Active`, `Inactive`
+
+### county_name
+
+All 95 Tennessee counties plus special values like
+`Accredited Online Schools`
+
+### district_type
+
+`County`, `City`, `SSD` (Special School District), `Private Schools`
 
 ------------------------------------------------------------------------
 
