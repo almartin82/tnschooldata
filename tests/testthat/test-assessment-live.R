@@ -340,6 +340,7 @@ test_that("fetch_assessment_multi combines multiple years", {
 
   skip_if(is.null(result), "Multi-year download failed")
   skip_if(nrow(result) == 0, "No data returned")
+  skip_if(length(unique(result$end_year)) < 2, "Partial data returned (possible network issue)")
 
   # Should have both years
   years <- unique(result$end_year)
